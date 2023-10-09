@@ -37,13 +37,13 @@ func ReadFromDirectory(directoryPath string) (results []map[string]interface{}, 
 
 	// Read all files
 	for _, file := range filePaths {
-		docs, errFile := ParseFile(file)
+		errFile := ParseFile(file)
 		if errFile != nil {
 			log.Println("error while reading file: ", file, " : ", errFile)
 			return nil, errFile
 		}
 		// add the parsed documents to the results
-		results = append(results, docs...)
+		results = append(results)
 	}
 	return
 }
