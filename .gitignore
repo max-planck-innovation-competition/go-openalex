@@ -20,3 +20,5 @@ openalex-snapshot/
 
 # Go workspace file
 go.work
+
+.idea
