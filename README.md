@@ -10,3 +10,4 @@ Work in progress
 ```
 go get -u github.com/max-planck-innovation-competition/go-openalex
 ```
+

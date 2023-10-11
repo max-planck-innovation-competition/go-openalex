@@ -1,6 +1,6 @@
 package openalex
 
-type T struct {
+type Source struct {
 	AbbreviatedTitle *string  `json:"abbreviated_title"`
 	AlternateTitles  []string `json:"alternate_titles"`
 	ApcPrices        []struct {

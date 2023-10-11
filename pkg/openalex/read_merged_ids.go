@@ -3,6 +3,7 @@ package openalex
 import (
 	"compress/gzip"
 	"encoding/csv"
+	"fmt"
 	"io"
 	"log/slog"
 	"os"
@@ -16,9 +17,25 @@ type MergedID struct {
 	MergeIntoID string
 }
 
+// MergedIdRecordHandler is a function that handles a parsed line of a file
+type MergedIdRecordHandler func(fileEntityType FileEntityType, mergedID MergedID) error
+
+func PrintMergedIdRecordHandler(fileEntityType FileEntityType, mergedID MergedID) error {
+	fmt.Println("fileEntityType", fileEntityType, "mergedID", mergedID)
+	return nil
+}
+
 // ParseMergedIDsFile parses a CSV file (either plain or Gzipped) into a slice of CsvData
-func ParseMergedIDsFile(filePath string) (results []MergedID, err error) {
+func ParseMergedIDsFile(filePath string, fn MergedIdRecordHandler) (err error) {
 	logger := slog.With("filePath", filePath)
+
+	// get the file entity type
+	fileEntityType, err := getEntityType(filePath)
+	if err != nil {
+		logger.With("err", err).Error("error getting file entity type")
+		return
+	}
+
 	var reader io.Reader
 
 	// Check if the file is Gzipped
@@ -61,7 +78,7 @@ func ParseMergedIDsFile(filePath string) (results []MergedID, err error) {
 			break
 		} else if err != nil {
 			logger.With("err", err).Error("error reading CSV record")
-			return nil, err
+			return err
 		}
 		if len(record) != 3 {
 			logger.With("record", strings.Join(record, ";")).Warn("Invalid CSV record")
@@ -71,14 +88,19 @@ func ParseMergedIDsFile(filePath string) (results []MergedID, err error) {
 			rowCount++
 			continue
 		}
-		// append the parsed record to the results
-		results = append(results, MergedID{
+		// generate the merged id struct
+		mergedID := MergedID{
 			MergeDate:   record[0],
 			ID:          record[1],
 			MergeIntoID: record[2],
-		})
+		}
+		// process the merged id
+		errProcess := fn(fileEntityType, mergedID)
+		if errProcess != nil {
+			logger.With("err", errProcess).Error("error processing CSV record")
+			return errProcess
+		}
 		rowCount++
 	}
-
 	return
 }

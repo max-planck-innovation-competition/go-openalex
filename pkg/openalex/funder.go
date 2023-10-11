@@ -1,7 +1,7 @@
 package openalex
 
-// Funders is a struct that represents the JSON response from the OpenAlex API.
-type Funders struct {
+// Funder is a struct that represents the JSON response from the OpenAlex API.
+type Funder struct {
 	AlternateTitles []string `json:"alternate_titles"`
 	CitedByCount    int      `json:"cited_by_count"`
 	CountryCode     string   `json:"country_code"`

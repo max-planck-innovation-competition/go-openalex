@@ -1,7 +1,6 @@
 package openalex
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -18,11 +17,10 @@ func TestParseMergedIDsFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.data, func(t *testing.T) {
-			res, err := ParseMergedIDsFile(tt.path)
+			err := ParseMergedIDsFile(tt.path, PrintMergedIdRecordHandler)
 			if err != nil {
 				t.Error(err)
 			}
-			fmt.Println(res)
 		})
 	}
 

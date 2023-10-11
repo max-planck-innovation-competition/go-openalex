@@ -2,6 +2,7 @@ package openalex
 
 import (
 	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -23,27 +24,36 @@ func visit(files *[]string) filepath.WalkFunc {
 	}
 }
 
-// ReadFromDirectory parses the directory of separated files provided by semantic scholar
-func ReadFromDirectory(directoryPath string) (results []map[string]interface{}, err error) {
-	log.Println("Start reading directory:", directoryPath)
-
-	var filePaths []string // stores the file paths of all the files in the directory
+// ReadFromDirectory parses the directory of separated files
+func ReadFromDirectory(directoryPath string, fnEntityHandler ParsedEntityLineHandler, fnMergedIdHandler MergedIdRecordHandler) (err error) {
+	logger := slog.With("directoryPath", directoryPath)
+	logger.Info("Start reading directory")
+	var filePaths []string // stores the filePath paths of all the files in the directory
 
 	// walk over the files in the directory
 	err = filepath.Walk(directoryPath, visit(&filePaths))
 	if err != nil {
-		return nil, err
+		logger.With("err", err).Error("error while walking the directory")
+		return err
 	}
-
-	// Read all files
-	for _, file := range filePaths {
-		errFile := ParseFile(file)
-		if errFile != nil {
-			log.Println("error while reading file: ", file, " : ", errFile)
-			return nil, errFile
+	// process all files
+	for _, filePath := range filePaths {
+		if strings.Contains(filePath, "merged_ids") {
+			// handle merged ids file
+			errFile := ParseMergedIDsFile(filePath, fnMergedIdHandler)
+			if errFile != nil {
+				logger.With("err", errFile).Error("error while parsing the merged id file")
+				return errFile
+			}
+		} else {
+			// handle other files
+			errFile := ParseFile(filePath, fnEntityHandler)
+			if errFile != nil {
+				logger.With("err", errFile).Error("error while parsing the file")
+				return errFile
+			}
 		}
-		// add the parsed documents to the results
-		results = append(results)
 	}
+	logger.Info("Finished reading directory")
 	return
 }
