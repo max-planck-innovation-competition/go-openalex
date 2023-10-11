@@ -24,8 +24,8 @@ func visit(files *[]string) filepath.WalkFunc {
 	}
 }
 
-// ReadFromDirectory parses the directory of separated files
-func ReadFromDirectory(directoryPath string, fnEntityHandler ParsedEntityLineHandler, fnMergedIdHandler MergedIdRecordHandler) (err error) {
+// ProcessDirectory parses the directory of separated files and processes them
+func ProcessDirectory(directoryPath string, fnEntityHandler ParsedEntityLineHandler, fnMergedIdHandler MergedIdRecordHandler) (err error) {
 	logger := slog.With("directoryPath", directoryPath)
 	logger.Info("Start reading directory")
 	var filePaths []string // stores the filePath paths of all the files in the directory
