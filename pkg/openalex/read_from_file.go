@@ -15,8 +15,10 @@ import (
 // use faster parser
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
+// ErrUnsupportedFileType is returned when the file type is not supported
 var ErrUnsupportedFileType = errors.New("unsupported file type")
 
+// ParseFile takes a file name and reads the data from within the file and parses every line it into structs
 func ParseFile(filePath string) (err error) {
 	logger := slog.With("filePath", filePath)
 
@@ -83,6 +85,9 @@ func ParseFile(filePath string) (err error) {
 		case *Author:
 			structBData := data.(*Author)
 			fmt.Printf("Parsed StructB: %+v\n", structBData)
+		default:
+			logger.Error("unsupported struct type")
+			return ErrUnsupportedFileType
 		}
 	}
 
