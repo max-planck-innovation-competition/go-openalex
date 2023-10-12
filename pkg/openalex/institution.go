@@ -2,6 +2,7 @@ package openalex
 
 // Institution is a struct that represents the JSON response from the OpenAlex API.
 type Institution struct {
+	ID                     string `json:"id"`
 	AssociatedInstitutions []struct {
 		CountryCode  string   `json:"country_code"`
 		DisplayName  string   `json:"display_name"`
@@ -33,7 +34,6 @@ type Institution struct {
 		Region         *string  `json:"region"`
 	} `json:"geo"`
 	HomepageURL *string `json:"homepage_url"`
-	ID          string  `json:"id"`
 	Ids         struct {
 		Grid      string `json:"grid"`
 		Mag       int    `json:"mag,omitempty"`
@@ -97,4 +97,14 @@ type Institution struct {
 		Score       float64 `json:"score"`
 		Wikidata    string  `json:"wikidata"`
 	} `json:"x_concepts"`
+}
+
+// GetID returns the ID of the institution
+func (i *Institution) GetID() string {
+	return i.ID
+}
+
+// GetType returns the entity type
+func (i *Institution) GetType() string {
+	return string(InstitutionsFileEntityType)
 }

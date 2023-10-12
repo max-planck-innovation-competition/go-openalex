@@ -2,6 +2,7 @@ package openalex
 
 // Funder is a struct that represents the JSON response from the OpenAlex API.
 type Funder struct {
+	ID              string   `json:"id"`
 	AlternateTitles []string `json:"alternate_titles"`
 	CitedByCount    int      `json:"cited_by_count"`
 	CountryCode     string   `json:"country_code"`
@@ -16,7 +17,6 @@ type Funder struct {
 	DisplayName string  `json:"display_name"`
 	GrantsCount int     `json:"grants_count"`
 	HomepageURL *string `json:"homepage_url"`
-	ID          string  `json:"id"`
 	Ids         struct {
 		Crossref int    `json:"crossref"`
 		Doi      string `json:"doi"`
@@ -52,4 +52,14 @@ type Funder struct {
 		Score       float64 `json:"score"`
 		Wikidata    string  `json:"wikidata"`
 	} `json:"x_concepts"`
+}
+
+// GetID returns the ID of the funder
+func (f *Funder) GetID() string {
+	return f.ID
+}
+
+// GetType returns the entity type
+func (f *Funder) GetType() string {
+	return string(FundersFileEntityType)
 }

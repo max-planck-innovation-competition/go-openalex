@@ -1,6 +1,7 @@
 package openalex
 
 type Source struct {
+	ID               string   `json:"id"`
 	AbbreviatedTitle *string  `json:"abbreviated_title"`
 	AlternateTitles  []string `json:"alternate_titles"`
 	ApcPrices        []struct {
@@ -25,7 +26,6 @@ type Source struct {
 	HostOrganizationLineage      []string `json:"host_organization_lineage"`
 	HostOrganizationLineageNames []string `json:"host_organization_lineage_names"`
 	HostOrganizationName         *string  `json:"host_organization_name"`
-	ID                           string   `json:"id"`
 	Ids                          struct {
 		Fatcat   string   `json:"fatcat,omitempty"`
 		Issn     []string `json:"issn,omitempty"`
@@ -67,4 +67,14 @@ type Source struct {
 		Score       float64 `json:"score"`
 		Wikidata    string  `json:"wikidata"`
 	} `json:"x_concepts"`
+}
+
+// GetID returns the ID of the source
+func (s *Source) GetID() string {
+	return s.ID
+}
+
+// GetType returns the entity type
+func (s *Source) GetType() string {
+	return string(SourcesFileEntityType)
 }

@@ -2,6 +2,7 @@ package openalex
 
 // Concept is a struct that represents a concept in OpenAlex
 type Concept struct {
+	ID        string `json:"id"`
 	Ancestors []struct {
 		DisplayName string `json:"display_name"`
 		ID          string `json:"id"`
@@ -18,7 +19,6 @@ type Concept struct {
 	CreatedDate string `json:"created_date"`
 	Description string `json:"description"`
 	DisplayName string `json:"display_name"`
-	ID          string `json:"id"`
 	Ids         struct {
 		Mag       int      `json:"mag"`
 		Openalex  string   `json:"openalex"`
@@ -57,4 +57,14 @@ type Concept struct {
 	Wikidata    string `json:"wikidata"`
 	WorksAPIURL string `json:"works_api_url"`
 	WorksCount  int    `json:"works_count"`
+}
+
+// GetID returns the ID of the concept
+func (c *Concept) GetID() string {
+	return c.ID
+}
+
+// GetType returns the entity type
+func (c *Concept) GetType() string {
+	return string(WorksFileEntityType)
 }
