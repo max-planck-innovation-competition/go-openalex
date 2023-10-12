@@ -22,3 +22,4 @@ openalex-snapshot/
 go.work
 
 .idea
+.env
