@@ -1,6 +1,7 @@
 package openalex
 
 type Publisher struct {
+	ID              string   `json:"id"`
 	AlternateTitles []string `json:"alternate_titles"`
 	CitedByCount    int      `json:"cited_by_count"`
 	CountryCodes    []string `json:"country_codes"`
@@ -14,7 +15,6 @@ type Publisher struct {
 	DisplayName    string  `json:"display_name"`
 	HierarchyLevel int     `json:"hierarchy_level"`
 	HomepageURL    *string `json:"homepage_url"`
-	ID             string  `json:"id"`
 	Ids            struct {
 		Openalex string `json:"openalex"`
 		Wikidata string `json:"wikidata,omitempty"`
@@ -56,4 +56,14 @@ type Publisher struct {
 		Score       float64 `json:"score"`
 		Wikidata    string  `json:"wikidata"`
 	} `json:"x_concepts"`
+}
+
+// GetID returns the ID of the publisher
+func (p *Publisher) GetID() string {
+	return p.ID
+}
+
+// GetType returns the entity type
+func (p *Publisher) GetType() string {
+	return string(PublishersFileEntityType)
 }
