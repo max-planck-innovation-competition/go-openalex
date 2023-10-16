@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -22,6 +23,27 @@ func visit(files *[]string) filepath.WalkFunc {
 		}
 		return nil
 	}
+}
+
+// OrderByMergedIDsLast sorts the file paths so that the merged ids file is last
+func OrderByMergedIDsLast(filePaths []string) []string {
+	// Custom sorting function to place file paths with "merged_ids" at the end
+	sort.SliceStable(filePaths, func(i, j int) bool {
+		if containsMergedIDs(filePaths[i]) && containsMergedIDs(filePaths[j]) {
+			return false
+		} else if containsMergedIDs(filePaths[i]) {
+			return false
+		} else if containsMergedIDs(filePaths[j]) {
+			return true
+		} else {
+			return filePaths[i] < filePaths[j]
+		}
+	})
+	return filePaths
+}
+
+func containsMergedIDs(filePath string) bool {
+	return strings.Contains(filePath, "merged_ids")
 }
 
 // ProcessDirectory parses the directory of separated files and processes them
@@ -54,6 +76,8 @@ func GetFiles(directoryPath string) (filePaths []string, err error) {
 		logger.With("err", err).Error("error while walking the directory")
 		return
 	}
+	// order the files
+	filePaths = OrderByMergedIDsLast(filePaths)
 	logger.Info("Finished listing directory")
 	return
 }
