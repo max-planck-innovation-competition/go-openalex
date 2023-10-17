@@ -19,7 +19,7 @@ func TestParseFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.data, func(t *testing.T) {
-			err := ParseFile(tt.path)
+			err := ParseFile(tt.path, PrintEntityHandler)
 			if err != nil {
 				t.Error(err)
 			}

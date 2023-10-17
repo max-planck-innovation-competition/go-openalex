@@ -40,6 +40,7 @@ func (abstractInvertedIndex *AbstractInvertedIndex) ToAbstract() string {
 }
 
 type Work struct {
+	ID                    string                `json:"id"`
 	Abstract              string                `json:"abstract"`
 	AbstractInvertedIndex AbstractInvertedIndex `json:"abstract_inverted_index"`
 	Authorships           []struct {
@@ -92,7 +93,6 @@ type Work struct {
 		URL         string   `json:"url"`
 		Version     *string  `json:"version"`
 	} `json:"host_venue"`
-	ID  string `json:"id"`
 	Ids struct {
 		Doi      string `json:"doi"`
 		Mag      int    `json:"mag"`
@@ -121,4 +121,14 @@ type Work struct {
 	Type            string    `json:"type"`
 	Updated         time.Time `json:"updated"`
 	UpdatedDate     string    `json:"updated_date"`
+}
+
+// GetID returns the ID of the work
+func (w *Work) GetID() string {
+	return w.ID
+}
+
+// GetType returns the entity type
+func (w *Work) GetType() string {
+	return string(WorksFileEntityType)
 }

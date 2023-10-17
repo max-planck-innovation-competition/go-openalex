@@ -15,10 +15,64 @@ import (
 // use faster parser
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
+// ErrUnsupportedFileType is returned when the file type is not supported
 var ErrUnsupportedFileType = errors.New("unsupported file type")
 
-func ParseFile(filePath string) (err error) {
+type FileEntityType string
+
+const (
+	AuthorsFileEntityType      FileEntityType = "authors"
+	ConceptsFileEntityType     FileEntityType = "concepts"
+	FundersFileEntityType      FileEntityType = "funders"
+	InstitutionsFileEntityType FileEntityType = "institution"
+	PublishersFileEntityType   FileEntityType = "publisher"
+	SourcesFileEntityType      FileEntityType = "sources"
+	WorksFileEntityType        FileEntityType = "works"
+)
+
+func getEntityType(filePath string) (result FileEntityType, err error) {
+	if strings.Contains(filePath, "author") {
+		result = AuthorsFileEntityType
+	} else if strings.Contains(filePath, "concepts") {
+		result = ConceptsFileEntityType
+	} else if strings.Contains(filePath, "funders") {
+		result = FundersFileEntityType
+	} else if strings.Contains(filePath, "institutions") {
+		result = InstitutionsFileEntityType
+	} else if strings.Contains(filePath, "publisher") {
+		result = PublishersFileEntityType
+	} else if strings.Contains(filePath, "works") {
+		result = WorksFileEntityType
+	} else if strings.Contains(filePath, "sources") {
+		result = SourcesFileEntityType
+	} else {
+		// handle unsupported filePath or struct type
+		slog.Error("unsupported filePath")
+		err = ErrUnsupportedFileType
+		return
+	}
+	return
+}
+
+// ParsedEntityLineHandler is a function that handles a parsed line of a file
+type ParsedEntityLineHandler func(fileEntityType FileEntityType, entity any) error
+
+// PrintEntityHandler is a function that prints a parsed line of a file
+func PrintEntityHandler(fileEntityType FileEntityType, entity any) error {
+	fmt.Println(fileEntityType, entity)
+	return nil
+}
+
+// ParseFile takes a file name and reads the data from within the file and parses every line it into structs
+func ParseFile(filePath string, fn ParsedEntityLineHandler) (err error) {
 	logger := slog.With("filePath", filePath)
+
+	// determine the struct type based on the filePath
+	entityType, err := getEntityType(filePath)
+	if err != nil {
+		logger.With("err", err).Error("error getting entity type")
+		return err
+	}
 
 	// init the read
 	var scanner *bufio.Scanner
@@ -57,14 +111,23 @@ func ParseFile(filePath string) (err error) {
 		line := scanner.Text()
 		// determine the struct type based on the filePath
 		var data interface{}
-		if strings.Contains(filePath, "work") {
-			data = &Work{}
-		} else if strings.Contains(filePath, "author") {
+
+		switch entityType {
+		case AuthorsFileEntityType:
 			data = &Author{}
-		} else {
-			// handle unsupported filePath or struct type
-			logger.Error("unsupported filePath")
-			return ErrUnsupportedFileType
+		case ConceptsFileEntityType:
+			data = &Concept{}
+		case FundersFileEntityType:
+			data = &Funder{}
+		case InstitutionsFileEntityType:
+			data = &Institution{}
+		case SourcesFileEntityType:
+			data = &Source{}
+		case PublishersFileEntityType:
+			data = &Publisher{}
+		case WorksFileEntityType:
+			data = &Work{}
+
 		}
 
 		// Unmarshal the JSON line into the determined struct using jsoniter
@@ -74,16 +137,15 @@ func ParseFile(filePath string) (err error) {
 			return err
 		}
 
-		// You can now work with the parsed struct data as needed.
-		switch data.(type) {
-		case *Work:
+		// convert the inverted abstract
+		if entityType == WorksFileEntityType {
 			work := data.(*Work)
-			fmt.Println(work.Title)
-			fmt.Printf("Parsed StructA: %+v\n", work.AbstractInvertedIndex.ToAbstract())
-		case *Author:
-			structBData := data.(*Author)
-			fmt.Printf("Parsed StructB: %+v\n", structBData)
+			work.Abstract = work.AbstractInvertedIndex.ToAbstract()
+			data = work
 		}
+
+		// handle the parsed line
+		err = fn(entityType, data)
 	}
 
 	err = scanner.Err()

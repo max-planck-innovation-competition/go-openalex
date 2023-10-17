@@ -1,14 +1,16 @@
 package openalex
 
 import (
-	"log"
+	"log/slog"
 	"os"
 	"os/exec"
 )
 
-// download snapshot from openalex, "AWS CLI" installation required
+// Sync downloads the latest snapshot from openalex
+// "AWS CLI" installation required
 // https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 func Sync(destPath string) (err error) {
+	logger := slog.With("destPath", destPath)
 	source := "s3://openalex"
 	arg := "--no-sign-request"
 	argDelete := "--delete"
@@ -17,16 +19,18 @@ func Sync(destPath string) (err error) {
 	// aws sync copies new or modified files to the destination, but does not delete old files
 	downloadCmd := exec.Command("aws", "s3", "sync", source, dest, arg)
 	downloadCmd.Stdout = os.Stdout
-	if err := downloadCmd.Run(); err != nil {
-		log.Fatal(err)
+	err = downloadCmd.Run()
+	if err != nil {
+		logger.With("err", err).Error("error while downloading snapshot")
 		return err
 	}
 
 	// delete outdated data that exist in the destination but not in the source
 	deleteCmd := exec.Command("aws", "s3", "sync", source, dest, arg, argDelete)
 	deleteCmd.Stdout = os.Stdout
-	if err := deleteCmd.Run(); err != nil {
-		log.Fatal(err)
+	err = deleteCmd.Run()
+	if err != nil {
+		logger.With("err", err).Error("error while deleting outdated data")
 		return err
 	}
 
