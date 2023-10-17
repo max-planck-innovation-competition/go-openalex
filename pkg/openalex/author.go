@@ -21,16 +21,16 @@ type Author struct {
 	MostCitedWork any `json:"most_cited_work"`
 	Orcid         any `json:"orcid"`
 	SummaryStats  struct {
-		CitedByCount2yr  int `json:"2yr_cited_by_count"`
-		HIndex2yr        int `json:"2yr_h_index"`
-		I10Index2yr      int `json:"2yr_i10_index"`
-		MeanCitedness2yr int `json:"2yr_mean_citedness"`
-		WorksCount2yr    int `json:"2yr_works_count"`
-		CitedByCount     int `json:"cited_by_count"`
-		HIndex           int `json:"h_index"`
-		I10Index         int `json:"i10_index"`
-		OaPercent        int `json:"oa_percent"`
-		WorksCount       int `json:"works_count"`
+		CitedByCount2yr  int     `json:"2yr_cited_by_count"`
+		HIndex2yr        int     `json:"2yr_h_index"`
+		I10Index2yr      int     `json:"2yr_i10_index"`
+		MeanCitedness2yr float64 `json:"2yr_mean_citedness"`
+		WorksCount2yr    int     `json:"2yr_works_count"`
+		CitedByCount     int     `json:"cited_by_count"`
+		HIndex           int     `json:"h_index"`
+		I10Index         int     `json:"i10_index"`
+		OaPercent        int     `json:"oa_percent"`
+		WorksCount       int     `json:"works_count"`
 	} `json:"summary_stats"`
 	Updated     string `json:"updated"`
 	UpdatedDate string `json:"updated_date"`
