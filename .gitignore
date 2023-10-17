@@ -22,3 +22,5 @@ openalex-snapshot/
 go.work
 
 .idea
+
+.DS_Store
