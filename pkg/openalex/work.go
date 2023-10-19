@@ -3,7 +3,6 @@ package openalex
 import (
 	"sort"
 	"strings"
-	"time"
 )
 
 // AbstractInvertedIndex is a struct that represents the inverted index of an abstract
@@ -113,14 +112,14 @@ type Work struct {
 		OaStatus string  `json:"oa_status"`
 		OaURL    *string `json:"oa_url"`
 	} `json:"open_access"`
-	PublicationDate string    `json:"publication_date"`
-	PublicationYear int       `json:"publication_year"`
-	ReferencedWorks []string  `json:"referenced_works"`
-	RelatedWorks    []string  `json:"related_works"`
-	Title           string    `json:"title"`
-	Type            string    `json:"type"`
-	Updated         time.Time `json:"updated"`
-	UpdatedDate     string    `json:"updated_date"`
+	PublicationDate string   `json:"publication_date"`
+	PublicationYear int      `json:"publication_year"`
+	ReferencedWorks []string `json:"referenced_works"`
+	RelatedWorks    []string `json:"related_works"`
+	Title           string   `json:"title"`
+	Type            string   `json:"type"`
+	Updated         string   `json:"updated"`
+	UpdatedDate     string   `json:"updated_date"`
 }
 
 // GetID returns the ID of the work
