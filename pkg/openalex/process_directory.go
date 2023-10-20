@@ -99,7 +99,7 @@ func ProcessFiles(filePaths []string, fnEntityHandler ParsedEntityLineHandler, f
 			}
 		} else {
 			// handle other files
-			errFile := ParseFile(filePath, fnEntityHandler)
+			_, errFile := ParseFile(filePath, fnEntityHandler)
 			if errFile != nil {
 				logger.
 					With("err", errFile).
