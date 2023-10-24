@@ -83,7 +83,7 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err erro
 		// if file has a .gz ending
 		compressedFile, errOpen := os.Open(filePath)
 		if errOpen != nil {
-			slog.With("err", err).Error("error opening file")
+			slog.With("err", errOpen).Error("error opening file")
 			return count, errOpen
 		}
 		defer compressedFile.Close()
