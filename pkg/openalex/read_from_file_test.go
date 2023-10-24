@@ -26,3 +26,11 @@ func TestParseFile(t *testing.T) {
 		})
 	}
 }
+
+func TestParseWork(t *testing.T) {
+	workSamplePath := "../../sample/openalex/works/W2741809807"
+	_, err := ParseFile(workSamplePath, PrintEntityHandler)
+	if err != nil {
+		t.Error(err)
+	}
+}

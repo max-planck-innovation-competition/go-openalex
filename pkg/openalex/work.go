@@ -1,23 +1,18 @@
 package openalex
 
 import (
+	jsoniter "github.com/json-iterator/go"
 	"sort"
 	"strings"
 )
 
-// AbstractInvertedIndex is a struct that represents the inverted index of an abstract
-type AbstractInvertedIndex struct {
-	IndexLength   int              `json:"IndexLength"`
-	InvertedIndex map[string][]int `json:"InvertedIndex,omitempty"`
-}
-
-func (abstractInvertedIndex *AbstractInvertedIndex) ToAbstract() string {
-	if abstractInvertedIndex == nil {
+func (w *Work) ToAbstract() string {
+	if w == nil {
 		return ""
 	}
 	// Create a list of (word, index) pairs.
 	var wordIndex [][]interface{}
-	for word, indices := range abstractInvertedIndex.InvertedIndex {
+	for word, indices := range w.AbstractInvertedIndex {
 		for _, idx := range indices {
 			wordIndex = append(wordIndex, []interface{}{word, idx})
 		}
@@ -39,9 +34,9 @@ func (abstractInvertedIndex *AbstractInvertedIndex) ToAbstract() string {
 }
 
 type Work struct {
-	ID                    string                `json:"id"`
-	Abstract              string                `json:"abstract"`
-	AbstractInvertedIndex AbstractInvertedIndex `json:"abstract_inverted_index"`
+	ID                    string           `json:"id"`
+	Abstract              string           `json:"abstract"`
+	AbstractInvertedIndex map[string][]int `json:"abstract_inverted_index"`
 	Authorships           []struct {
 		Author struct {
 			DisplayName string  `json:"display_name"`
@@ -93,10 +88,10 @@ type Work struct {
 		Version     *string  `json:"version"`
 	} `json:"host_venue"`
 	Ids struct {
-		Doi      string `json:"doi"`
-		Mag      int    `json:"mag"`
-		Openalex string `json:"openalex"`
-		Pmid     string `json:"pmid,omitempty"`
+		Doi      string          `json:"doi"`
+		Mag      jsoniter.Number `json:"mag"`
+		Openalex string          `json:"openalex"`
+		Pmid     string          `json:"pmid,omitempty"`
 	} `json:"ids"`
 	IsParatext  bool `json:"is_paratext"`
 	IsRetracted bool `json:"is_retracted"`

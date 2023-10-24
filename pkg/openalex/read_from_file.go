@@ -140,7 +140,7 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err erro
 		// convert the inverted abstract
 		if entityType == WorksFileEntityType {
 			work := data.(*Work)
-			work.Abstract = work.AbstractInvertedIndex.ToAbstract()
+			work.Abstract = work.ToAbstract()
 			data = work
 		}
 
