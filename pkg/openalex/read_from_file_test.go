@@ -58,3 +58,11 @@ func TestParseInstitution(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestParseConcept(t *testing.T) {
+	conceptSamplePath := "../../sample/openalex/concepts/C71924100"
+	_, err := ParseFile(conceptSamplePath, PrintEntityHandler)
+	if err != nil {
+		t.Error(err)
+	}
+}
