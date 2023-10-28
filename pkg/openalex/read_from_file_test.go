@@ -50,3 +50,11 @@ func TestParseSource(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestParseInstitution(t *testing.T) {
+	institutionSamplePath := "../../sample/openalex/institutions/I27837315"
+	_, err := ParseFile(institutionSamplePath, PrintEntityHandler)
+	if err != nil {
+		t.Error(err)
+	}
+}
