@@ -51,8 +51,32 @@ type Work struct {
 			Ror         *string `json:"ror"`
 			Type        *string `json:"type"`
 		} `json:"institutions"`
-		RawAffiliationString *string `json:"raw_affiliation_string"`
+		RawAffiliationString *string  `json:"raw_affiliation_string"`
+		RawAuthorName        *string  `json:"raw_author_name"`
+		IsCorresponding      *bool    `json:"is_corresponding"`
+		Countries            []string `json:"countries"`
 	} `json:"authorships"`
+	ApcList struct {
+		Value      int     `json:"value"`
+		Currency   *string `json:"currency"`
+		Provenance *string `json:"provenance"`
+		ValueUsd   int     `json:"value_usd"`
+	} `json:"apc_list"`
+	BestOALocation struct {
+		IsOA           *bool   `json:"is_oa"`
+		LandingPageUrl *string `json:"landing_page_url"`
+		PdfUrl         *string `json:"pdf_url"`
+		License        *string `json:"license"`
+		Version        *string `json:"version"`
+		Source         struct {
+			Id               *string  `json:"id"`
+			DisplayName      *string  `json:"display_name"`
+			IssnL            *string  `json:"issn_l"`
+			Issn             []string `json:"issn"`
+			HostOrganization *string  `json:"host_organization"`
+			Type             *string  `json:"type"`
+		} `json:"source"`
+	} `json:"best_oa_location"`
 	Biblio struct {
 		FirstPage *string `json:"first_page"`
 		Issue     *string `json:"issue"`
@@ -68,26 +92,56 @@ type Work struct {
 		Score       float64 `json:"score"`
 		Wikidata    string  `json:"wikidata"`
 	} `json:"concepts"`
-	CountsByYear []struct {
+	CorrespondingAuthorIds      []string `json:"corresponding_author_ids"`
+	CorrespondingInstitutionIds []string `json:"corresponding_institution_ids"`
+	CountriesDistinctCount      int      `json:"countries_distinct_count"`
+	CountsByYear                []struct {
 		CitedByCount int `json:"cited_by_count"`
 		Year         int `json:"year"`
 	} `json:"counts_by_year"`
 	CreatedDate string `json:"created_date"`
 	DisplayName string `json:"display_name"`
 	Doi         string `json:"doi"`
-	HostVenue   struct {
-		DisplayName *string  `json:"display_name"`
-		ID          *string  `json:"id"`
-		IsOa        *bool    `json:"is_oa"`
-		Issn        []string `json:"issn"`
-		IssnL       *string  `json:"issn_l"`
-		License     *string  `json:"license"`
-		Publisher   *string  `json:"publisher"`
-		Type        string   `json:"type"`
-		URL         string   `json:"url"`
-		Version     *string  `json:"version"`
-	} `json:"host_venue"`
-	Ids struct {
+	Grants      []struct {
+		Funder            string `json:"funder"`
+		FunderDisplayName string `json:"funder_display_name"`
+		AwardId           string `json:"award_id"`
+	}
+	HasFulltext               *bool  `json:"has_fulltext"`
+	InstitutionsDistinctCount int    `json:"institutions_distinct_count"`
+	Language                  string `json:"language"`
+	Locations                 []struct {
+		IsOA           *bool   `json:"is_oa"`
+		LandingPageUrl *string `json:"landing_page_url"`
+		PdfUrl         *string `json:"pdf_url"`
+		Source         struct {
+			Id               *string  `json:"id"`
+			DisplayName      *string  `json:"display_name"`
+			IssnL            *string  `json:"issn_l"`
+			Issn             []string `json:"issn"`
+			HostOrganization *string  `json:"host_organization"`
+			Type             *string  `json:"type"`
+		} `json:"source"`
+		License *string `json:"license"`
+		Version *string `json:"version"`
+	} `json:"locations"`
+	PrimaryLocation struct {
+		IsOA           *bool   `json:"is_oa"`
+		LandingPageUrl *string `json:"landing_page_url"`
+		PdfUrl         *string `json:"pdf_url"`
+		Source         struct {
+			Id               *string  `json:"id"`
+			DisplayName      *string  `json:"display_name"`
+			IssnL            *string  `json:"issn_l"`
+			Issn             []string `json:"issn"`
+			HostOrganization *string  `json:"host_organization"`
+			Type             *string  `json:"type"`
+		} `json:"source"`
+		License *string `json:"license"`
+		Version *string `json:"version"`
+	} `json:"primary_location"`
+	LocationCount int `json:"location_count"`
+	Ids           struct {
 		Doi      string          `json:"doi"`
 		Mag      jsoniter.Number `json:"mag"`
 		Openalex string          `json:"openalex"`
@@ -103,9 +157,10 @@ type Work struct {
 		QualifierUi    *string `json:"qualifier_ui"`
 	} `json:"mesh"`
 	OpenAccess struct {
-		IsOa     bool    `json:"is_oa"`
-		OaStatus string  `json:"oa_status"`
-		OaURL    *string `json:"oa_url"`
+		IsOa                     bool    `json:"is_oa"`
+		OaStatus                 string  `json:"oa_status"`
+		OaURL                    *string `json:"oa_url"`
+		AnyRepositoryHasFulltext bool    `json:"any_repository_has_fulltext"`
 	} `json:"open_access"`
 	PublicationDate string   `json:"publication_date"`
 	PublicationYear int      `json:"publication_year"`
@@ -113,8 +168,8 @@ type Work struct {
 	RelatedWorks    []string `json:"related_works"`
 	Title           string   `json:"title"`
 	Type            string   `json:"type"`
-	Updated         string   `json:"updated"`
 	UpdatedDate     string   `json:"updated_date"`
+	TypeCrossref    string   `json:"type_crossref"`
 }
 
 // GetID returns the ID of the work
