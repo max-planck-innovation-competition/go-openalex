@@ -66,3 +66,11 @@ func TestParseConcept(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestParsePublisher(t *testing.T) {
+	publisherSamplePath := "../../sample/openalex/publishers/P4310319965"
+	_, err := ParseFile(publisherSamplePath, PrintEntityHandler)
+	if err != nil {
+		t.Error(err)
+	}
+}

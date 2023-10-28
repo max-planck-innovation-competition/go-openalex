@@ -18,21 +18,18 @@ type Publisher struct {
 	Ids            struct {
 		Openalex string `json:"openalex"`
 		Wikidata string `json:"wikidata,omitempty"`
+		Ror      string `json:"ror"`
 	} `json:"ids"`
 	ImageThumbnailURL *string  `json:"image_thumbnail_url"`
 	ImageURL          *string  `json:"image_url"`
 	Lineage           []string `json:"lineage"`
-	ParentPublisher   *struct {
-		DisplayName string `json:"display_name"`
-		ID          string `json:"id"`
-	} `json:"parent_publisher"`
-	Roles []struct {
+	ParentPublisher   *string  `json:"parent_publisher"`
+	Roles             []struct {
 		ID         string `json:"id"`
 		Role       string `json:"role"`
 		WorksCount int    `json:"works_count"`
 	} `json:"roles"`
 	SourcesAPIURL string `json:"sources_api_url"`
-	SourcesCount  int    `json:"sources_count"`
 	SummaryStats  struct {
 		CitedByCount2yr  int     `json:"2yr_cited_by_count"`
 		HIndex2yr        int     `json:"2yr_h_index"`
@@ -46,7 +43,6 @@ type Publisher struct {
 		SourcesCount     int     `json:"sources_count"`
 		WorksCount       int     `json:"works_count"`
 	} `json:"summary_stats"`
-	Updated     string `json:"updated"`
 	UpdatedDate string `json:"updated_date"`
 	WorksCount  int    `json:"works_count"`
 	XConcepts   []struct {
