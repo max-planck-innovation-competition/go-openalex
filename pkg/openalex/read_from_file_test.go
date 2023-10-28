@@ -74,3 +74,11 @@ func TestParsePublisher(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestParseFunder(t *testing.T) {
+	funderSamplePath := "../../sample/openalex/funders/F4320332161"
+	_, err := ParseFile(funderSamplePath, PrintEntityHandler)
+	if err != nil {
+		t.Error(err)
+	}
+}
