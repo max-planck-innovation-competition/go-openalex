@@ -34,3 +34,11 @@ func TestParseWork(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestParseAuthor(t *testing.T) {
+	workSamplePath := "../../sample/openalex/authors/A5023888391"
+	_, err := ParseFile(workSamplePath, PrintEntityHandler)
+	if err != nil {
+		t.Error(err)
+	}
+}
