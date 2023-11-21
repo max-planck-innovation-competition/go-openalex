@@ -83,7 +83,7 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err erro
 		// if file has a .gz ending
 		compressedFile, errOpen := os.Open(filePath)
 		if errOpen != nil {
-			slog.With("err", err).Error("error opening file")
+			slog.With("err", errOpen).Error("error opening file")
 			return count, errOpen
 		}
 		defer compressedFile.Close()
@@ -140,7 +140,7 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err erro
 		// convert the inverted abstract
 		if entityType == WorksFileEntityType {
 			work := data.(*Work)
-			work.Abstract = work.AbstractInvertedIndex.ToAbstract()
+			work.Abstract = work.ToAbstract()
 			data = work
 		}
 

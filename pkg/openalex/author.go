@@ -2,14 +2,21 @@ package openalex
 
 // Author is a struct that represents the data of an author of OpenAlex
 type Author struct {
-	ID                      string `json:"id"`
-	CitedByCount            int    `json:"cited_by_count"`
-	CountsByYear            []any  `json:"counts_by_year"`
-	CreatedDate             string `json:"created_date"`
-	DisplayName             string `json:"display_name"`
-	DisplayNameAlternatives []any  `json:"display_name_alternatives"`
+	ID           string `json:"id"`
+	CitedByCount int    `json:"cited_by_count"`
+	CountsByYear []struct {
+		Year         int `json:"year"`
+		WorksCount   int `json:"works_count"`
+		CitedByCount int `json:"cited_by_count"`
+	} `json:"counts_by_year"`
+	CreatedDate             string   `json:"created_date"`
+	DisplayName             string   `json:"display_name"`
+	DisplayNameAlternatives []string `json:"display_name_alternatives"`
 	Ids                     struct {
-		Openalex string `json:"openalex"`
+		Openalex  string `json:"openalex"`
+		Orcid     string `json:"orcid"`
+		Scopus    string `json:"scopus"`
+		Wikipedia string `json:"wikipedia"`
 	} `json:"ids"`
 	LastKnownInstitution struct {
 		CountryCode string `json:"country_code"`
@@ -32,7 +39,6 @@ type Author struct {
 		OaPercent        float64 `json:"oa_percent"`
 		WorksCount       int     `json:"works_count"`
 	} `json:"summary_stats"`
-	Updated     string `json:"updated"`
 	UpdatedDate string `json:"updated_date"`
 	WorksAPIURL string `json:"works_api_url"`
 	WorksCount  int    `json:"works_count"`

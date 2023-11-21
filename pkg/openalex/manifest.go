@@ -2,6 +2,7 @@ package openalex
 
 import (
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"log/slog"
 	"path"
@@ -60,11 +61,10 @@ func (m *Manifest) Hash() (result string, err error) {
 
 // CompareData gets the amount of records in parsed data and compares it with the RecordCount in Manifest
 func (m *Manifest) CompareData(RootPath string) (err error) {
-
 	for _, entity := range m.Entries {
 		after, _ := strings.CutPrefix(entity.URL, "s3://openalex")
 		filePath := path.Join(RootPath, after)
-		slog.Info("filePath", filePath)
+		slog.With("filePath", filePath)
 
 		manifestCount := entity.Meta.RecordCount
 		parsedCount, err := ParseFile(filePath, PrintEntityHandler)
@@ -76,13 +76,15 @@ func (m *Manifest) CompareData(RootPath string) (err error) {
 		result := manifestCount - parsedCount
 		switch {
 		case result > 0:
-			slog.With("error", err).Error("Not matched, data missing")
-			return
+			errMissed := errors.New("not matched, data missing")
+			slog.With("err", errMissed).Error("Not matched, data missing")
+			return errMissed
 		case result < 0:
-			slog.With("error", err).Error("Not matched, data outdated")
-			return
+			errOutdated := errors.New("not matched, data outdated")
+			slog.With("err", errOutdated).Error("Not matched, data missing")
+			return errOutdated
 		case result == 0:
-			fmt.Println("Data matched")
+			slog.Info("Data matched")
 		}
 	}
 	return nil
