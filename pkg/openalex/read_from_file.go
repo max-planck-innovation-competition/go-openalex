@@ -106,6 +106,9 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err erro
 		scanner = bufio.NewScanner(fileContent)
 	}
 
+	buf := make([]byte, 0, 64*1024)
+	scanner.Buffer(buf, 1024*1024)
+
 	// iterate over the lines
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -149,6 +152,7 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err erro
 
 		// increment the count of the parsed record
 		count++
+
 	}
 
 	err = scanner.Err()
