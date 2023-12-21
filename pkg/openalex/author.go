@@ -25,8 +25,8 @@ type Author struct {
 		Ror         string `json:"ror"`
 		Type        string `json:"type"`
 	} `json:"last_known_institution"`
-	MostCitedWork any `json:"most_cited_work"`
-	Orcid         any `json:"orcid"`
+	MostCitedWork any `json:"most_cited_work"` // TODO: replace any with struct
+	Orcid         any `json:"orcid"`           // TODO: replace any with struct
 	SummaryStats  struct {
 		CitedByCount2yr  int     `json:"2yr_cited_by_count"`
 		HIndex2yr        int     `json:"2yr_h_index"`
@@ -42,7 +42,7 @@ type Author struct {
 	UpdatedDate string `json:"updated_date"`
 	WorksAPIURL string `json:"works_api_url"`
 	WorksCount  int    `json:"works_count"`
-	XConcepts   []any  `json:"x_concepts"`
+	XConcepts   []any  `json:"x_concepts"` // TODO: replace any with struct
 }
 
 // GetID returns the ID of the author
