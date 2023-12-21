@@ -42,7 +42,7 @@ type Source struct {
 	PublisherID           *string  `json:"publisher_id"`
 	PublisherLineage      []string `json:"publisher_lineage"`
 	PublisherLineageNames []string `json:"publisher_lineage_names"`
-	Societies             []any    `json:"societies"`
+	Societies             []any    `json:"societies"` // TODO: replace any with struct
 	SummaryStats          struct {
 		CitedByCount2yr  int     `json:"2yr_cited_by_count"`
 		HIndex2yr        int     `json:"2yr_h_index"`

@@ -59,12 +59,12 @@ type Institution struct {
 		ID                           string   `json:"id"`
 		IsInDoaj                     bool     `json:"is_in_doaj"`
 		IsOa                         bool     `json:"is_oa"`
-		Issn                         any      `json:"issn"`
-		IssnL                        any      `json:"issn_l"`
-		Publisher                    any      `json:"publisher"`
-		PublisherID                  any      `json:"publisher_id"`
-		PublisherLineage             []any    `json:"publisher_lineage"`
-		PublisherLineageNames        []any    `json:"publisher_lineage_names"`
+		Issn                         any      `json:"issn"`                    // TODO: replace any with struct
+		IssnL                        any      `json:"issn_l"`                  // TODO: replace any with struct
+		Publisher                    any      `json:"publisher"`               // TODO: replace any with struct
+		PublisherID                  any      `json:"publisher_id"`            // TODO: replace any with struct
+		PublisherLineage             []any    `json:"publisher_lineage"`       // TODO: replace any with struct
+		PublisherLineageNames        []any    `json:"publisher_lineage_names"` // TODO: replace any with struct
 		Type                         string   `json:"type"`
 	} `json:"repositories"`
 	Roles []struct {

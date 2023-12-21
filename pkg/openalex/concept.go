@@ -38,7 +38,7 @@ type Concept struct {
 		ID          string  `json:"id"`
 		Level       int     `json:"level"`
 		Score       float64 `json:"score"`
-		Wikidata    any     `json:"wikidata"`
+		Wikidata    any     `json:"wikidata"` // TODO: replace any with struct
 	} `json:"related_concepts"`
 	SummaryStats struct {
 		CitedByCount2yr  int     `json:"2yr_cited_by_count"`

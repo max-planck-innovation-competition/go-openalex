@@ -23,8 +23,8 @@ type Funder struct {
 		Openalex string `json:"openalex"`
 		Wikidata string `json:"wikidata,omitempty"`
 	} `json:"ids"`
-	ImageThumbnailURL any `json:"image_thumbnail_url"`
-	ImageURL          any `json:"image_url"`
+	ImageThumbnailURL any `json:"image_thumbnail_url"` // TODO: replace any with struct
+	ImageURL          any `json:"image_url"`           // TODO: replace any with struct
 	Roles             []struct {
 		ID         string `json:"id"`
 		Role       string `json:"role"`
