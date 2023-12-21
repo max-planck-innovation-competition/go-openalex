@@ -1,5 +1,7 @@
 package openalex
 
+import jsoniter "github.com/json-iterator/go"
+
 // Concept is a struct that represents a concept in OpenAlex
 type Concept struct {
 	ID        string `json:"id"`
@@ -20,11 +22,11 @@ type Concept struct {
 	Description string `json:"description"`
 	DisplayName string `json:"display_name"`
 	Ids         struct {
-		Mag       int      `json:"mag"`
-		Openalex  string   `json:"openalex"`
-		UmlsCui   []string `json:"umls_cui,omitempty"`
-		Wikidata  string   `json:"wikidata"`
-		Wikipedia string   `json:"wikipedia"`
+		Mag       jsoniter.Number `json:"mag"`
+		Openalex  string          `json:"openalex"`
+		UmlsCui   []string        `json:"umls_cui,omitempty"`
+		Wikidata  string          `json:"wikidata"`
+		Wikipedia string          `json:"wikipedia"`
 	} `json:"ids"`
 	ImageThumbnailURL *string `json:"image_thumbnail_url"`
 	ImageURL          *string `json:"image_url"`
@@ -52,7 +54,6 @@ type Concept struct {
 		OaPercent        float64 `json:"oa_percent"`
 		WorksCount       int     `json:"works_count"`
 	} `json:"summary_stats"`
-	Updated     string `json:"updated"`
 	UpdatedDate string `json:"updated_date"`
 	Wikidata    string `json:"wikidata"`
 	WorksAPIURL string `json:"works_api_url"`

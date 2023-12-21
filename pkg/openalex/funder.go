@@ -18,13 +18,14 @@ type Funder struct {
 	GrantsCount int     `json:"grants_count"`
 	HomepageURL *string `json:"homepage_url"`
 	Ids         struct {
-		Crossref int    `json:"crossref"`
+		Crossref string `json:"crossref"`
 		Doi      string `json:"doi"`
 		Openalex string `json:"openalex"`
 		Wikidata string `json:"wikidata,omitempty"`
+		Ror      string `json:"ror"`
 	} `json:"ids"`
-	ImageThumbnailURL any `json:"image_thumbnail_url"` // TODO: replace any with struct
-	ImageURL          any `json:"image_url"`           // TODO: replace any with struct
+	ImageThumbnailURL string `json:"image_thumbnail_url"`
+	ImageURL          string `json:"image_url"`
 	Roles             []struct {
 		ID         string `json:"id"`
 		Role       string `json:"role"`
@@ -42,16 +43,8 @@ type Funder struct {
 		OaPercent        float64 `json:"oa_percent"`
 		WorksCount       int     `json:"works_count"`
 	} `json:"summary_stats"`
-	Updated     string `json:"updated"`
 	UpdatedDate string `json:"updated_date"`
 	WorksCount  int    `json:"works_count"`
-	XConcepts   []struct {
-		DisplayName string  `json:"display_name"`
-		ID          string  `json:"id"`
-		Level       int     `json:"level"`
-		Score       float64 `json:"score"`
-		Wikidata    string  `json:"wikidata"`
-	} `json:"x_concepts"`
 }
 
 // GetID returns the ID of the funder

@@ -64,14 +64,14 @@ func PrintEntityHandler(fileEntityType FileEntityType, entity any) error {
 }
 
 // ParseFile takes a file name and reads the data from within the file and parses every line it into structs
-func ParseFile(filePath string, fn ParsedEntityLineHandler) (err error) {
+func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err error) {
 	logger := slog.With("filePath", filePath)
-
+	count = 0
 	// determine the struct type based on the filePath
 	entityType, err := getEntityType(filePath)
 	if err != nil {
 		logger.With("err", err).Error("error getting entity type")
-		return err
+		return count, err
 	}
 
 	// init the read
@@ -84,14 +84,14 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (err error) {
 		compressedFile, errOpen := os.Open(filePath)
 		if errOpen != nil {
 			slog.With("err", errOpen).Error("error opening file")
-			return errOpen
+			return count, errOpen
 		}
 		defer compressedFile.Close()
 		// get the raw content of the file
 		rawContent, errGzip := gzip.NewReader(compressedFile)
 		if errGzip != nil {
 			slog.With("err", errGzip).Error("error opening gz file")
-			return errGzip
+			return count, errGzip
 		}
 		scanner = bufio.NewScanner(rawContent)
 	} else {
@@ -99,12 +99,15 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (err error) {
 		fileContent, errOpen := os.Open(filePath)
 		if errOpen != nil {
 			slog.With("err", errOpen).Error("error opening file")
-			return errOpen
+			return count, errOpen
 		}
 		defer fileContent.Close()
 		// init scanner
 		scanner = bufio.NewScanner(fileContent)
 	}
+
+	buf := make([]byte, 0, 64*1024)
+	scanner.Buffer(buf, 1024*1024)
 
 	// iterate over the lines
 	for scanner.Scan() {
@@ -134,25 +137,29 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (err error) {
 		err = json.UnmarshalFromString(line, data)
 		if err != nil {
 			logger.With("err", err).Error("error unmarshalling line")
-			return err
+			return count, err
 		}
 
 		// convert the inverted abstract
 		if entityType == WorksFileEntityType {
 			work := data.(*Work)
-			work.Abstract = work.AbstractInvertedIndex.ToAbstract()
+			work.Abstract = work.ToAbstract()
 			data = work
 		}
 
 		// handle the parsed line
 		err = fn(entityType, data)
+
+		// increment the count of the parsed record
+		count++
+
 	}
 
 	err = scanner.Err()
 	if err != nil {
 		logger.With("err", err).Error("error scanning file")
-		return err
+		return count, err
 	}
 
-	return nil
+	return count, nil
 }

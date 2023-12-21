@@ -2,8 +2,11 @@ package openalex
 
 import (
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"log/slog"
+	"path"
+	"strings"
 )
 
 // ManifestUrl is a type that represents a manifest URL
@@ -54,4 +57,35 @@ func (m *Manifest) Hash() (result string, err error) {
 	}
 	result = fmt.Sprintf("%x", sha256.Sum256(data))
 	return
+}
+
+// CompareData gets the amount of records in parsed data and compares it with the RecordCount in Manifest
+func (m *Manifest) CompareData(RootPath string) (err error) {
+	for _, entity := range m.Entries {
+		after, _ := strings.CutPrefix(entity.URL, "s3://openalex")
+		filePath := path.Join(RootPath, after)
+		slog.With("filePath", filePath)
+
+		manifestCount := entity.Meta.RecordCount
+		parsedCount, err := ParseFile(filePath, PrintEntityHandler)
+		if err != nil {
+			slog.With("error", err).Error("Failed to parse gz-file from loaded manifest")
+			return err
+		}
+
+		result := manifestCount - parsedCount
+		switch {
+		case result > 0:
+			errMissed := errors.New("not matched, data missing")
+			slog.With("err", errMissed).Error("Not matched, data missing")
+			return errMissed
+		case result < 0:
+			errOutdated := errors.New("not matched, data outdated")
+			slog.With("err", errOutdated).Error("Not matched, data missing")
+			return errOutdated
+		case result == 0:
+			slog.Info("Data matched")
+		}
+	}
+	return nil
 }
