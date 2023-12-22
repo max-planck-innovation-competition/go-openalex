@@ -25,8 +25,8 @@ type Author struct {
 		Ror         string `json:"ror"`
 		Type        string `json:"type"`
 	} `json:"last_known_institution"`
-	MostCitedWork any `json:"most_cited_work"` // TODO: replace any with struct
-	Orcid         any `json:"orcid"`           // TODO: replace any with struct
+	MostCitedWork string `json:"most_cited_work"`
+	Orcid         string `json:"orcid"`
 	SummaryStats  struct {
 		CitedByCount2yr  int     `json:"2yr_cited_by_count"`
 		HIndex2yr        int     `json:"2yr_h_index"`
@@ -39,10 +39,18 @@ type Author struct {
 		OaPercent        float64 `json:"oa_percent"`
 		WorksCount       int     `json:"works_count"`
 	} `json:"summary_stats"`
-	UpdatedDate string `json:"updated_date"`
-	WorksAPIURL string `json:"works_api_url"`
-	WorksCount  int    `json:"works_count"`
-	XConcepts   []any  `json:"x_concepts"` // TODO: replace any with struct
+	UpdatedDate string           `json:"updated_date"`
+	WorksAPIURL string           `json:"works_api_url"`
+	WorksCount  int              `json:"works_count"`
+	XConcepts   []AuthorXConcept `json:"x_concepts"`
+}
+
+type AuthorXConcept struct {
+	DisplayName string  `json:"display_name"`
+	ID          string  `json:"id"`
+	Level       float64 `json:"level"`
+	Score       float64 `json:"score"`
+	Wikidata    string  `json:"wikidata"`
 }
 
 // GetID returns the ID of the author
