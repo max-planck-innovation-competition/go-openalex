@@ -41,11 +41,11 @@ type AuthorLastKnownInstitution struct {
 }
 
 type AuthorSummaryStats struct {
-	CitedByCount2yr  int     `json:"2yr_cited_by_count" gql:"two_year_cited_by_count"`
-	HIndex2yr        int     `json:"2yr_h_index" gql:"two_year_h_index"`
-	I10Index2yr      int     `json:"2yr_i10_index" gql:"two_year_i10_index"`
-	MeanCitedness2yr float64 `json:"2yr_mean_citedness" gql:"two_year_mean_citedness"`
-	WorksCount2yr    int     `json:"2yr_works_count" gql:"two_year_works_count"`
+	CitedByCount2yr  int     `json:"2yr_cited_by_count" graphql:"two_year_cited_by_count"`
+	HIndex2yr        int     `json:"2yr_h_index" graphql:"two_year_h_index"`
+	I10Index2yr      int     `json:"2yr_i10_index" graphql:"two_year_i10_index"`
+	MeanCitedness2yr float64 `json:"2yr_mean_citedness" graphql:"two_year_mean_citedness"`
+	WorksCount2yr    int     `json:"2yr_works_count" graphql:"two_year_works_count"`
 	CitedByCount     int     `json:"cited_by_count"`
 	HIndex           int     `json:"h_index"`
 	I10Index         int     `json:"i10_index"`
