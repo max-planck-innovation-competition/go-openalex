@@ -105,13 +105,16 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err erro
 		// init scanner
 		scanner = bufio.NewScanner(fileContent)
 	}
-
-	buf := make([]byte, 0, 64*1024)
-	scanner.Buffer(buf, 1024*1024)
+	// set the max capacity of the scanner
+	const maxCapacity = 100 * 1024 * 1024 // 100 MB
+	buf := make([]byte, maxCapacity)
+	scanner.Buffer(buf, maxCapacity)
 
 	// iterate over the lines
 	for scanner.Scan() {
 		line := scanner.Text()
+		// replace all open alex prefixes
+		line = strings.ReplaceAll(line, "https://openalex.org/", "")
 		// determine the struct type based on the filePath
 		var data interface{}
 
