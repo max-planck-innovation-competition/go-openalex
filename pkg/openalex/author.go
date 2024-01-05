@@ -2,21 +2,27 @@ package openalex
 
 // Author is a struct that represents the data of an author of OpenAlex
 type Author struct {
-	ID                      string                     `json:"id"`
-	CitedByCount            int                        `json:"cited_by_count"`
-	CountsByYear            []AuthorCountsByYear       `json:"counts_by_year"`
-	CreatedDate             string                     `json:"created_date"`
-	DisplayName             string                     `json:"display_name"`
-	DisplayNameAlternatives []string                   `json:"display_name_alternatives"`
-	Ids                     AuthorIDs                  `json:"ids"`
-	LastKnownInstitution    AuthorLastKnownInstitution `json:"last_known_institution"`
-	MostCitedWork           string                     `json:"most_cited_work"`
-	Orcid                   string                     `json:"orcid"`
-	SummaryStats            AuthorSummaryStats         `json:"summary_stats"`
-	UpdatedDate             string                     `json:"updated_date"`
-	WorksAPIURL             string                     `json:"works_api_url"`
-	WorksCount              int                        `json:"works_count"`
-	XConcepts               []AuthorXConcept           `json:"x_concepts"`
+	ID                      string               `json:"id"`
+	CitedByCount            int                  `json:"cited_by_count"`
+	CountsByYear            []AuthorCountsByYear `json:"counts_by_year"`
+	CreatedDate             string               `json:"created_date"`
+	DisplayName             string               `json:"display_name"`
+	DisplayNameAlternatives []string             `json:"display_name_alternatives"`
+	Ids                     AuthorIDs            `json:"ids"`
+	LastKnownInstitution    AuthorInstitution    `json:"last_known_institution"`
+	MostCitedWork           string               `json:"most_cited_work"`
+	Orcid                   string               `json:"orcid"`
+	SummaryStats            AuthorSummaryStats   `json:"summary_stats"`
+	UpdatedDate             string               `json:"updated_date"`
+	WorksAPIURL             string               `json:"works_api_url"`
+	WorksCount              int                  `json:"works_count"`
+	XConcepts               []AuthorXConcept     `json:"x_concepts"`
+	Affiliations            []Affiliation        `json:"affiliations"` // this is available via the api
+}
+
+type Affiliation struct {
+	Years       []int `json:"years"`
+	Institution AuthorInstitution
 }
 
 type AuthorCountsByYear struct {
@@ -32,7 +38,7 @@ type AuthorIDs struct {
 	Wikipedia string `json:"wikipedia"`
 }
 
-type AuthorLastKnownInstitution struct {
+type AuthorInstitution struct {
 	CountryCode string `json:"country_code"`
 	DisplayName string `json:"display_name"`
 	ID          string `json:"id"`
