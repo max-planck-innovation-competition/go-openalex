@@ -33,10 +33,23 @@ func (w *Work) ToAbstract() string {
 	return strings.Join(words, " ")
 }
 
+// GenerateAbstractFromInvertedIndex sets the abstract
+func (w *Work) GenerateAbstractFromInvertedIndex() *Work {
+	w.Abstract = w.ToAbstract()
+	return w
+}
+
+// SetAbstractInvertedIndexToNil sets the abstract inverted index to nil
+func (w *Work) SetAbstractInvertedIndexToNil() *Work {
+	w.AbstractInvertedIndex = nil
+	return w
+}
+
+// Work is the struct for a work in the open alex database
 type Work struct {
 	ID                    string           `json:"id"`
 	Abstract              string           `json:"abstract"`
-	AbstractInvertedIndex map[string][]int `json:"abstract_inverted_index"`
+	AbstractInvertedIndex map[string][]int `json:"abstract_inverted_index,omitempty"`
 	Authorships           []struct {
 		Author struct {
 			DisplayName string  `json:"display_name"`
