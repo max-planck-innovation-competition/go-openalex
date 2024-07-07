@@ -9,6 +9,7 @@ import (
 // Sync downloads the latest snapshot from openalex
 // "AWS CLI" installation required
 // https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+// Note that the Snapshot has around 422GB and 1.6TB after uncompression
 func Sync(destPath string) (err error) {
 	logger := slog.With("destPath", destPath)
 	source := "s3://openalex"

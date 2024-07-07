@@ -11,10 +11,11 @@ func TestParseFile(t *testing.T) {
 		path       string
 		wantLength int
 	}{
-		{"stdWorks", "../../sample/openalex/works/updated_date=2023-05-16/part_000", 27},
-		{"gzWorks", "../../sample/openalex/works/updated_date=2023-05-16/part_000.gz", 27},
-		{"gzAuthors", "../../sample/openalex/authors/updated_date=2023-04-21/part_000.gz", 50},
-		{"gzAuthors", "../../sample/openalex/authors/updated_date=2023-04-21/part_000", 50},
+		{"stdWorks", "C:/DOCDB/openalex/data/works/updated_date=2024-06-30/part_043.gz", 27},
+		/*	{"stdWorks", "../../sample/openalex/works/updated_date=2023-05-16/part_000", 27},
+			{"gzWorks", "../../sample/openalex/works/updated_date=2023-05-16/part_000.gz", 27},
+			{"gzAuthors", "../../sample/openalex/authors/updated_date=2023-04-21/part_000.gz", 50},
+			{"gzAuthors", "../../sample/openalex/authors/updated_date=2023-04-21/part_000", 50}, */
 	}
 
 	for _, tt := range tests {

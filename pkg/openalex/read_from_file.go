@@ -5,11 +5,12 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
-	jsoniter "github.com/json-iterator/go"
 	"log/slog"
 	"os"
 	"path"
 	"strings"
+
+	jsoniter "github.com/json-iterator/go"
 )
 
 // use faster parser
