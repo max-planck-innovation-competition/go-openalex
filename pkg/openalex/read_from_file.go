@@ -5,11 +5,12 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
-	jsoniter "github.com/json-iterator/go"
 	"log/slog"
 	"os"
 	"path"
 	"strings"
+
+	jsoniter "github.com/json-iterator/go"
 )
 
 // use faster parser
@@ -30,7 +31,7 @@ const (
 	WorksFileEntityType        FileEntityType = "works"
 )
 
-func getEntityType(filePath string) (result FileEntityType, err error) {
+func GetEntityType(filePath string) (result FileEntityType, err error) {
 	if strings.Contains(filePath, "author") {
 		result = AuthorsFileEntityType
 	} else if strings.Contains(filePath, "concepts") {
@@ -68,7 +69,7 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err erro
 	logger := slog.With("filePath", filePath)
 	count = 0
 	// determine the struct type based on the filePath
-	entityType, err := getEntityType(filePath)
+	entityType, err := GetEntityType(filePath)
 	if err != nil {
 		logger.With("err", err).Error("error getting entity type")
 		return count, err
@@ -150,6 +151,7 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err erro
 			data = work
 		}
 
+		// TODO
 		// handle the parsed line
 		err = fn(entityType, data)
 

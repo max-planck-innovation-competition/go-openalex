@@ -30,7 +30,7 @@ func ParseMergedIDsFile(filePath string, fn MergedIdRecordHandler) (err error) {
 	logger := slog.With("filePath", filePath)
 
 	// get the file entity type
-	fileEntityType, err := getEntityType(filePath)
+	fileEntityType, err := GetEntityType(filePath)
 	if err != nil {
 		logger.With("err", err).Error("error getting file entity type")
 		return
