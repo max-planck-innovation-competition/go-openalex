@@ -7,6 +7,7 @@ import (
 
 // Tests the complete directory
 func TestReadFromDirectory(t *testing.T) {
+	//Change to according directory
 	err := ProcessDirectory("C:\\docdb\\openalex", PrintEntityHandler, PrintMergedIdRecordHandler)
 	if err != nil {
 		t.Error(err)
