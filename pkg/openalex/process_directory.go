@@ -46,7 +46,7 @@ func containsMergedIDs(filePath string) bool {
 	return strings.Contains(filePath, "merged_ids")
 }
 
-// ProcessDirectory parses the directory of separated files and processes them
+/*// ProcessDirectory parses the directory of separated files and processes them
 func ProcessDirectory(directoryPath string, fnEntityHandler ParsedEntityLineHandler, fnMergedIdHandler MergedIdRecordHandler) (err error) {
 	logger := slog.With("directoryPath", directoryPath)
 	logger.Info("Start reading directory")
@@ -64,7 +64,7 @@ func ProcessDirectory(directoryPath string, fnEntityHandler ParsedEntityLineHand
 	}
 	logger.Info("Finished reading directory")
 	return
-}
+}*/
 
 // GetFiles returns a list of files in a directory
 func GetFiles(directoryPath string) (filePaths []string, err error) {
@@ -83,7 +83,7 @@ func GetFiles(directoryPath string) (filePaths []string, err error) {
 }
 
 // ProcessFiles parses the files and processes them
-func ProcessFiles(filePaths []string, fnEntityHandler ParsedEntityLineHandler, fnMergedIdHandler MergedIdRecordHandler) (err error) {
+func ProcessFiles(filePaths []string, fnEntityHandler ParsedEntityLineHandler, fnMergedIdHandler MergedIdRecordHandler, sh *StateHandler) (err error) {
 	logger := slog.With("method", "ProcessFiles")
 	// process all files
 	for _, filePath := range filePaths {
@@ -99,7 +99,7 @@ func ProcessFiles(filePaths []string, fnEntityHandler ParsedEntityLineHandler, f
 			}
 		} else {
 			// handle other files
-			_, errFile := ParseFile(filePath, fnEntityHandler)
+			_, errFile := ParseFile(filePath, fnEntityHandler, sh)
 			if errFile != nil {
 				logger.
 					With("err", errFile).
@@ -107,6 +107,7 @@ func ProcessFiles(filePaths []string, fnEntityHandler ParsedEntityLineHandler, f
 					Error("error while parsing the file")
 				return errFile
 			}
+
 		}
 	}
 	return

@@ -9,7 +9,7 @@ import (
 // to test: go test -timeout 99999s -run TestSQLHandlerFull -v
 func TestSQLHandlerFull(t *testing.T) {
 	// TODO: windows directory as env variable
-	stateHandler := NewStateHandler("log.db", "./", "C:\\DOCDB\\openalex\\snapshot.zip")
+	stateHandler := NewStateHandler("log.db", "C:\\go-openalex\\openalex-snapshot\\data", "C:\\go-openalex\\openalex-snapshot\\data")
 	//Comment to test safe delete
 	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
 	fmt.Println(stateHandler)

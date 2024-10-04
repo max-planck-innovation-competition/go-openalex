@@ -8,6 +8,8 @@ import (
 	"log/slog"
 	"os"
 	"path"
+	"regexp"
+	"strconv"
 	"strings"
 
 	jsoniter "github.com/json-iterator/go"
@@ -55,6 +57,16 @@ func GetEntityType(filePath string) (result FileEntityType, err error) {
 	return
 }
 
+func getUpdatedDate(filePath string) string {
+	// Define the regex pattern to match "updated_date=YYYY-MM-DD"
+	pattern := `updated_date=\d{4}-\d{2}-\d{2}`
+	re := regexp.MustCompile(pattern)
+
+	// Find the first occurrence of the pattern in the path
+	match := re.FindString(filePath)
+	return match
+}
+
 // ParsedEntityLineHandler is a function that handles a parsed line of a file
 type ParsedEntityLineHandler func(fileEntityType FileEntityType, entity any) error
 
@@ -65,9 +77,10 @@ func PrintEntityHandler(fileEntityType FileEntityType, entity any) error {
 }
 
 // ParseFile takes a file name and reads the data from within the file and parses every line it into structs
-func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err error) {
+func ParseFile(filePath string, fn ParsedEntityLineHandler, sh *StateHandler) (count int, err error) {
 	logger := slog.With("filePath", filePath)
 	count = 0
+
 	// determine the struct type based on the filePath
 	entityType, err := GetEntityType(filePath)
 	if err != nil {
@@ -112,7 +125,15 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err erro
 	scanner.Buffer(buf, maxCapacity)
 
 	// iterate over the lines
+	entityLineIndex := 0
 	for scanner.Scan() {
+		entityLineIndex++
+		entityLineName := "entity_line_" + strconv.Itoa(entityLineIndex) + "_end"
+		entityLineDone, _ := sh.RegisterOrSkipEntityLine(entityLineName)
+		if entityLineDone {
+			continue
+		}
+
 		line := scanner.Text()
 		// replace all open alex prefixes
 		line = strings.ReplaceAll(line, "https://openalex.org/", "")
@@ -151,14 +172,17 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler) (count int, err erro
 			data = work
 		}
 
-		// TODO
 		// handle the parsed line
 		err = fn(entityType, data)
+
+		sh.MarkEntityLineAsFinished()
 
 		// increment the count of the parsed record
 		count++
 
 	}
+
+	sh.MarkEntityZipAsFinished()
 
 	err = scanner.Err()
 	if err != nil {

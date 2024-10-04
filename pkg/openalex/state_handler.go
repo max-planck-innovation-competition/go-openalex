@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"path/filepath"
 
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -143,7 +143,7 @@ func (sh *StateHandler) RegisterOrSkipEntityFolder(folderName string) (bool, err
 				EntityType:       entityType,
 				Done:             false,
 				Info:             "New Entity Folder Process Started",
-				FullPath:         filepath.Join(sh.SnapshotZipPath, "::", folderName),
+				FullPath:         filepath.Join(sh.SnapshotZipPath, folderName),
 			}
 			errCreate := sh.db.Create(&newEntityFolder).Error
 			if errCreate != nil {
@@ -176,7 +176,7 @@ func (sh *StateHandler) RegisterOrSkipDateFolder(dateFolderName string) (bool, e
 				EntityFolderId: sh.currentEntityFolderSQL.ID,
 				Identifier:     identifier,
 				DateFolderName: dateFolderName,
-				FullPath:       sh.currentEntityFolderSQL.FullPath + "/" + dateFolderName,
+				FullPath:       filepath.Join(sh.currentEntityFolderSQL.FullPath, dateFolderName),
 				Info:           "New Date Folder Process Started",
 				Done:           false,
 			}
@@ -211,7 +211,7 @@ func (sh *StateHandler) RegisterOrSkipEntityZip(zipName string) (bool, error) {
 				DateFolderId:  sh.currentDateFolderSQL.ID,
 				Identifier:    identifier,
 				EntityZipName: zipName,
-				FullPath:      sh.currentDateFolderSQL.FullPath + "/" + zipName,
+				FullPath:      filepath.Join(sh.currentDateFolderSQL.FullPath, zipName),
 				Done:          false,
 				Info:          "new entity zip process started",
 			}
@@ -266,6 +266,34 @@ func (sh *StateHandler) RegisterOrSkipEntityLine(line_info string) (bool, error)
 	}
 
 	return sh.currentEntityLineSQL.Done, nil
+}
+
+func (sh *StateHandler) RegisterOrSkipEntityFile(filePath string) (bool, error) {
+	logger := slog.With("filePath", filePath)
+
+	entityType, err := GetEntityType(filePath)
+	if err != nil {
+		logger.With("err", err).Error("error getting entity type")
+	}
+
+	entityFolderDone, err := sh.RegisterOrSkipEntityFolder(string(entityType))
+	if err != nil {
+		logger.With("err", err).Error("error by registering EntityFolder")
+	}
+
+	date := getUpdatedDate(filePath)
+	dateFolderDone, err := sh.RegisterOrSkipDateFolder(date)
+	if err != nil {
+		logger.With("err", err).Error("error by registering DateFolder")
+	}
+
+	lastElement := filepath.Base(filePath)
+	entityZipDone, err := sh.RegisterOrSkipEntityZip(lastElement)
+	if err != nil {
+		logger.With("err", err).Error("error by registering zip")
+	}
+
+	return entityFolderDone && dateFolderDone && entityZipDone, nil
 }
 
 // SetSafeDelete no if directory.done = false or no entry exists
