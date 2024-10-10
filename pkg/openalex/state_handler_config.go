@@ -19,6 +19,7 @@ type StateHandler struct {
 	currentEntityFolderSQL EntityFolderSQL
 	currentDateFolderSQL   DateFolderSQL
 	currentEntityZipSQL    EntityZipSQL
+	currentEntityFileSQL   EntityFileSQL
 	currentEntityLineSQL   EntityLineSQL
 	DatabasePath           string //Database Dir + Database Name
 	db                     *gorm.DB

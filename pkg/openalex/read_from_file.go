@@ -182,8 +182,6 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler, sh *StateHandler) (c
 
 	}
 
-	sh.MarkEntityZipAsFinished()
-
 	err = scanner.Err()
 	if err != nil {
 		logger.With("err", err).Error("error scanning file")

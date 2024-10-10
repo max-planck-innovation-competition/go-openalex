@@ -25,7 +25,7 @@ type SnapshotSQL struct {
 // /works, /authors, etc...
 type EntityFolderSQL struct {
 	gorm.Model
-	SnapshotId       uint `gorm:"index"` //foreign key fo snapshot
+	SnapshotId       uint `gorm:"index"` //foreign key of snapshot
 	EntityFolderName string
 	Identifier       string //ZipPath + "::" + EntityFolderName
 	EntityType       FileEntityType
@@ -59,14 +59,25 @@ type EntityZipSQL struct {
 	EntityLines   []EntityLineSQL `gorm:"foreignkey:EntityZipId"`
 }
 
+type EntityFileSQL struct {
+	gorm.Model
+	SnapshotId     uint `gorm:"index"` //foreign key of snapshot
+	EntityFileName string
+	Identifier     string //ZipPath + "::" + EntityFolderName + "::" + DateFolderName + "::" + EntityZipName
+	FullPath       string
+	Done           bool
+	Info           string
+	EntityLines    []EntityLineSQL `gorm:"foreignkey:EntityFileId"`
+}
+
 type EntityLineSQL struct {
 	gorm.Model
-	EntityZipId uint `gorm:"index"` // Foreign key to EntityZip
-	LineInfo    string
-	Identifier  string //ZipPath + "::" + EntityFolderName + "::" + DateFolderName + "::" + EntityZipName + "::" + LineInfo
-	Info        string
-	FullPath    string
-	Done        bool
+	EntityFileId uint `gorm:"index"` // Foreign key to EntityFile
+	LineInfo     string
+	Identifier   string //ZipPath + "::" + EntityFolderName + "::" + DateFolderName + "::" + EntityZipName + "::" + LineInfo
+	Info         string
+	FullPath     string
+	Done         bool
 }
 
 // Initialize loads Last Known State
@@ -235,7 +246,7 @@ func (sh *StateHandler) RegisterOrSkipEntityZip(zipName string) (bool, error) {
 }
 
 func (sh *StateHandler) RegisterOrSkipEntityLine(line_info string) (bool, error) {
-	identifier := sh.currentEntityZipSQL.Identifier + "::" + line_info
+	identifier := sh.currentEntityFileSQL.Identifier + "::" + line_info
 
 	var entityLine EntityLineSQL
 	errEntityLine := sh.db.Where("identifier = ?", identifier).First(&entityLine).Error
@@ -243,11 +254,11 @@ func (sh *StateHandler) RegisterOrSkipEntityLine(line_info string) (bool, error)
 		if errors.Is(errEntityLine, gorm.ErrRecordNotFound) {
 			fmt.Println("No record for this xml file, creating")
 			newEntityLine := EntityLineSQL{
-				EntityZipId: sh.currentEntityZipSQL.ID,
-				Identifier:  identifier,
-				LineInfo:    line_info,
-				Done:        false,
-				FullPath:    sh.currentEntityZipSQL.FullPath + "::" + line_info,
+				EntityFileId: sh.currentEntityFileSQL.ID,
+				Identifier:   identifier,
+				LineInfo:     line_info,
+				Done:         false,
+				FullPath:     sh.currentEntityFileSQL.FullPath + "::" + line_info,
 			}
 			errCreate := sh.db.Create(&newEntityLine).Error
 			if errCreate != nil {
@@ -269,31 +280,40 @@ func (sh *StateHandler) RegisterOrSkipEntityLine(line_info string) (bool, error)
 }
 
 func (sh *StateHandler) RegisterOrSkipEntityFile(filePath string) (bool, error) {
-	logger := slog.With("filePath", filePath)
 
-	entityType, err := GetEntityType(filePath)
-	if err != nil {
-		logger.With("err", err).Error("error getting entity type")
+	identifier := filePath
+	fileName := filepath.Base(filePath)
+
+	var entityFile EntityFileSQL
+	errEntityFile := sh.db.Where("identifier = ?", identifier).First(&entityFile).Error
+	if errEntityFile != nil {
+		if errors.Is(errEntityFile, gorm.ErrRecordNotFound) {
+			fmt.Println("No record for this xml file, creating")
+			newEntityFile := EntityFileSQL{
+				SnapshotId:     sh.currentSnapshotSQL.ID,
+				Identifier:     identifier,
+				EntityFileName: fileName,
+				FullPath:       filePath,
+				Done:           false,
+				Info:           "new entity file process started",
+			}
+			errCreate := sh.db.Create(&newEntityFile).Error
+			if errCreate != nil {
+				slog.With("err", errCreate).Error("failed to create entity zip entry in db")
+			}
+			sh.currentEntityFileSQL = newEntityFile
+			return false, nil
+		} else {
+			return false, errEntityFile
+		}
 	}
 
-	entityFolderDone, err := sh.RegisterOrSkipEntityFolder(string(entityType))
-	if err != nil {
-		logger.With("err", err).Error("error by registering EntityFolder")
+	// won't be registered if already done
+	if !entityFile.Done {
+		sh.currentEntityFileSQL = entityFile
 	}
 
-	date := getUpdatedDate(filePath)
-	dateFolderDone, err := sh.RegisterOrSkipDateFolder(date)
-	if err != nil {
-		logger.With("err", err).Error("error by registering DateFolder")
-	}
-
-	lastElement := filepath.Base(filePath)
-	entityZipDone, err := sh.RegisterOrSkipEntityZip(lastElement)
-	if err != nil {
-		logger.With("err", err).Error("error by registering zip")
-	}
-
-	return entityFolderDone && dateFolderDone && entityZipDone, nil
+	return entityFile.Done, nil
 }
 
 // SetSafeDelete no if directory.done = false or no entry exists
@@ -386,6 +406,19 @@ func (sh *StateHandler) MarkEntityZipAsFinished() {
 	resultStatus := sh.db.Model(&sh.currentEntityZipSQL).Update("done", true)
 	if resultStatus.Error != nil {
 		panic(resultStatus.Error)
+	}
+}
+
+func (sh *StateHandler) MarkEntityFileAsFinished() {
+	// set the status of the directory as finished
+	err := sh.db.Model(&sh.currentEntityFileSQL).Update("done", true).Error
+	if err != nil {
+		panic(err)
+	}
+	// set the info of the directory as finished
+	err = sh.db.Model(&sh.currentEntityFileSQL).Update("info", "Finished").Error
+	if err != nil {
+		panic(err)
 	}
 }
 
