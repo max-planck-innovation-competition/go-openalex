@@ -15,14 +15,11 @@ type StateHandler struct {
 	SafeDeleteOnly  bool
 	//for the state
 	//these are initialized in NewSqlLogger(...)
-	currentSnapshotSQL     SnapshotSQL
-	currentEntityFolderSQL EntityFolderSQL
-	currentDateFolderSQL   DateFolderSQL
-	currentEntityZipSQL    EntityZipSQL
-	currentEntityFileSQL   EntityFileSQL
-	currentEntityLineSQL   EntityLineSQL
-	DatabasePath           string //Database Dir + Database Name
-	db                     *gorm.DB
+	currentSnapshotSQL   SnapshotSQL
+	currentEntityFileSQL EntityFileSQL
+	currentEntityLineSQL EntityLineSQL
+	DatabasePath         string //Database Dir + Database Name
+	db                   *gorm.DB
 }
 
 // New creates a new state handler
