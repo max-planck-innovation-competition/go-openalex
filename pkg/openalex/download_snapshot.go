@@ -10,7 +10,7 @@ import (
 // "AWS CLI" installation required
 // https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 // Note that the Snapshot has around 422GB and 1.6TB after uncompression
-func Sync(destPath string) (err error) {
+func Sync(destPath string, sh *StateHandler) (err error) {
 	logger := slog.With("destPath", destPath)
 	source := "s3://openalex"
 	arg := "--no-sign-request"
@@ -35,6 +35,9 @@ func Sync(destPath string) (err error) {
 		logger.With("err", err).Error("error while deleting outdated data")
 		return err
 	}
+
+	// after each data synchronization, mark snapshot as updated
+	sh.MarkSnapshotAsUpdated()
 
 	return err
 }
