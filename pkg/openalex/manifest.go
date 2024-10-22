@@ -60,14 +60,14 @@ func (m *Manifest) Hash() (result string, err error) {
 }
 
 // CompareData gets the amount of records in parsed data and compares it with the RecordCount in Manifest
-func (m *Manifest) CompareData(RootPath string) (err error) {
+func (m *Manifest) CompareData(RootPath string, sh *StateHandler) (err error) {
 	for _, entity := range m.Entries {
 		after, _ := strings.CutPrefix(entity.URL, "s3://openalex")
 		filePath := path.Join(RootPath, after)
 		slog.With("filePath", filePath)
 
 		manifestCount := entity.Meta.RecordCount
-		parsedCount, err := ParseFile(filePath, PrintEntityHandler)
+		parsedCount, err := ParseFile(filePath, PrintEntityHandler, sh)
 		if err != nil {
 			slog.With("error", err).Error("Failed to parse gz-file from loaded manifest")
 			return err

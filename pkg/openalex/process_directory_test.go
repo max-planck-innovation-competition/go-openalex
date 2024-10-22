@@ -1,14 +1,21 @@
 package openalex
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
 
 // Tests the complete directory
 func TestReadFromDirectory(t *testing.T) {
+
+	stateHandler := NewStateHandler("log.db", "C:\\go-openalex\\openalex-snapshot\\data", "C:\\go-openalex\\openalex-snapshot\\data")
+	//Comment to test safe delete
+	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
+	fmt.Println(stateHandler)
+
 	//Change to according directory
-	err := ProcessDirectory("C:\\docdb\\openalex", PrintEntityHandler, PrintMergedIdRecordHandler)
+	err := ProcessDirectory("C:\\docdb\\openalex", PrintEntityHandler, PrintMergedIdRecordHandler, stateHandler)
 	if err != nil {
 		t.Error(err)
 	}

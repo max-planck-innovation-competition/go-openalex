@@ -1,11 +1,18 @@
 package openalex
 
 import (
+	"fmt"
 	"testing"
 )
 
 // Test std and gz file
 func TestParseFile(t *testing.T) {
+
+	stateHandler := NewStateHandler("log.db", "C:\\go-openalex\\openalex-snapshot\\data", "C:\\go-openalex\\openalex-snapshot\\data")
+	//Comment to test safe delete
+	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
+	fmt.Println(stateHandler)
+
 	var tests = []struct {
 		data       string
 		path       string
@@ -20,7 +27,7 @@ func TestParseFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.data, func(t *testing.T) {
-			_, err := ParseFile(tt.path, PrintEntityHandler)
+			_, err := ParseFile(tt.path, PrintEntityHandler, stateHandler)
 			if err != nil {
 				t.Error(err)
 			}
@@ -29,56 +36,91 @@ func TestParseFile(t *testing.T) {
 }
 
 func TestParseWork(t *testing.T) {
+	stateHandler := NewStateHandler("log.db", "C:\\go-openalex\\openalex-snapshot\\data", "C:\\go-openalex\\openalex-snapshot\\data")
+	//Comment to test safe delete
+	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
+	fmt.Println(stateHandler)
+
 	workSamplePath := "../../sample/openalex/works/W2741809807"
-	_, err := ParseFile(workSamplePath, PrintEntityHandler)
+	_, err := ParseFile(workSamplePath, PrintEntityHandler, stateHandler)
 	if err != nil {
 		t.Error(err)
 	}
 }
 
 func TestParseAuthor(t *testing.T) {
+	stateHandler := NewStateHandler("log.db", "C:\\go-openalex\\openalex-snapshot\\data", "C:\\go-openalex\\openalex-snapshot\\data")
+	//Comment to test safe delete
+	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
+	fmt.Println(stateHandler)
+
 	authorSamplePath := "../../sample/openalex/authors/A5023888391"
-	_, err := ParseFile(authorSamplePath, PrintEntityHandler)
+	_, err := ParseFile(authorSamplePath, PrintEntityHandler, stateHandler)
 	if err != nil {
 		t.Error(err)
 	}
 }
 
 func TestParseSource(t *testing.T) {
+	stateHandler := NewStateHandler("log.db", "C:\\go-openalex\\openalex-snapshot\\data", "C:\\go-openalex\\openalex-snapshot\\data")
+	//Comment to test safe delete
+	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
+	fmt.Println(stateHandler)
+
 	sourceSamplePath := "../../sample/openalex/sources/S137773608"
-	_, err := ParseFile(sourceSamplePath, PrintEntityHandler)
+	_, err := ParseFile(sourceSamplePath, PrintEntityHandler, stateHandler)
 	if err != nil {
 		t.Error(err)
 	}
 }
 
 func TestParseInstitution(t *testing.T) {
+	stateHandler := NewStateHandler("log.db", "C:\\go-openalex\\openalex-snapshot\\data", "C:\\go-openalex\\openalex-snapshot\\data")
+	//Comment to test safe delete
+	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
+	fmt.Println(stateHandler)
+
 	institutionSamplePath := "../../sample/openalex/institutions/I27837315"
-	_, err := ParseFile(institutionSamplePath, PrintEntityHandler)
+	_, err := ParseFile(institutionSamplePath, PrintEntityHandler, stateHandler)
 	if err != nil {
 		t.Error(err)
 	}
 }
 
 func TestParseConcept(t *testing.T) {
+	stateHandler := NewStateHandler("log.db", "C:\\go-openalex\\openalex-snapshot\\data", "C:\\go-openalex\\openalex-snapshot\\data")
+	//Comment to test safe delete
+	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
+	fmt.Println(stateHandler)
+
 	conceptSamplePath := "../../sample/openalex/concepts/C71924100"
-	_, err := ParseFile(conceptSamplePath, PrintEntityHandler)
+	_, err := ParseFile(conceptSamplePath, PrintEntityHandler, stateHandler)
 	if err != nil {
 		t.Error(err)
 	}
 }
 
 func TestParsePublisher(t *testing.T) {
+	stateHandler := NewStateHandler("log.db", "C:\\go-openalex\\openalex-snapshot\\data", "C:\\go-openalex\\openalex-snapshot\\data")
+	//Comment to test safe delete
+	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
+	fmt.Println(stateHandler)
+
 	publisherSamplePath := "../../sample/openalex/publishers/P4310319965"
-	_, err := ParseFile(publisherSamplePath, PrintEntityHandler)
+	_, err := ParseFile(publisherSamplePath, PrintEntityHandler, stateHandler)
 	if err != nil {
 		t.Error(err)
 	}
 }
 
 func TestParseFunder(t *testing.T) {
+	stateHandler := NewStateHandler("log.db", "C:\\go-openalex\\openalex-snapshot\\data", "C:\\go-openalex\\openalex-snapshot\\data")
+	//Comment to test safe delete
+	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
+	fmt.Println(stateHandler)
+
 	funderSamplePath := "../../sample/openalex/funders/F4320332161"
-	_, err := ParseFile(funderSamplePath, PrintEntityHandler)
+	_, err := ParseFile(funderSamplePath, PrintEntityHandler, stateHandler)
 	if err != nil {
 		t.Error(err)
 	}

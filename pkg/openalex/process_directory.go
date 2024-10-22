@@ -46,8 +46,8 @@ func containsMergedIDs(filePath string) bool {
 	return strings.Contains(filePath, "merged_ids")
 }
 
-/*// ProcessDirectory parses the directory of separated files and processes them
-func ProcessDirectory(directoryPath string, fnEntityHandler ParsedEntityLineHandler, fnMergedIdHandler MergedIdRecordHandler) (err error) {
+// ProcessDirectory parses the directory of separated files and processes them
+func ProcessDirectory(directoryPath string, fnEntityHandler ParsedEntityLineHandler, fnMergedIdHandler MergedIdRecordHandler, sh *StateHandler) (err error) {
 	logger := slog.With("directoryPath", directoryPath)
 	logger.Info("Start reading directory")
 	// get the files
@@ -57,14 +57,14 @@ func ProcessDirectory(directoryPath string, fnEntityHandler ParsedEntityLineHand
 		return
 	}
 	// process the files
-	err = ProcessFiles(filePaths, fnEntityHandler, fnMergedIdHandler)
+	err = ProcessFiles(filePaths, fnEntityHandler, fnMergedIdHandler, sh)
 	if err != nil {
 		logger.With("err", err).Error("error while processing the files")
 		return
 	}
 	logger.Info("Finished reading directory")
 	return
-}*/
+}
 
 // GetFiles returns a list of files in a directory
 func GetFiles(directoryPath string) (filePaths []string, err error) {
