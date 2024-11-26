@@ -36,8 +36,11 @@ func Sync(destPath string, sh *StateHandler) (err error) {
 		return err
 	}
 
-	// after each data synchronization, mark snapshot as updated
-	sh.MarkSnapshotAsUpdated()
+	// mark snapshot
+	if sh != nil {
+		// after each data synchronization, mark snapshot as updated
+		sh.MarkSnapshotAsUpdated()
+	}
 
 	return err
 }

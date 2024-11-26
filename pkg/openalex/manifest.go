@@ -67,7 +67,11 @@ func (m *Manifest) CompareData(RootPath string, sh *StateHandler) (err error) {
 		slog.With("filePath", filePath)
 
 		manifestCount := entity.Meta.RecordCount
-		parsedCount, err := ParseFile(filePath, PrintEntityHandler, sh)
+		p := Processor{
+			DirectoryPath: RootPath,
+			LineHandler:   PrintLineHandler,
+		}
+		parsedCount, err := p.ParseFile(filePath)
 		if err != nil {
 			slog.With("error", err).Error("Failed to parse gz-file from loaded manifest")
 			return err
@@ -83,7 +87,7 @@ func (m *Manifest) CompareData(RootPath string, sh *StateHandler) (err error) {
 			errOutdated := errors.New("not matched, data outdated")
 			slog.With("err", errOutdated).Error("Not matched, data missing")
 			return errOutdated
-		case result == 0:
+		default:
 			slog.Info("Data matched")
 		}
 	}

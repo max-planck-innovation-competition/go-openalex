@@ -90,7 +90,7 @@ func (sh *StateHandler) IsSnapshotFinished() bool {
 	return sh.currentSnapshotSQL.Done
 }
 
-// RegisterOrEntityFile returns True if the entity file is already processed
+// RegisterOrSkipEntityFile returns True if the entity file is already processed
 // If the EntityFile entry does not exist,
 // creates a new one (using the current processDir as foreign key)
 // or loads the existing bulk file information if the entry exists but is not done

@@ -2,6 +2,7 @@ package openalex
 
 import (
 	"fmt"
+	"os"
 	"testing"
 )
 
@@ -16,6 +17,15 @@ func TestDownloadSnapshot(t *testing.T) {
 
 	//Please change to your directory
 	err := Sync("C:\\docdb\\openalex", stateHandler)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestSync(t *testing.T) {
+	path := os.Getenv("TEST_OPENALEX_PATH")
+	//Please change to your directory
+	err := Sync(path, nil)
 	if err != nil {
 		t.Error(err)
 	}
