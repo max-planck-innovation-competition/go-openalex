@@ -24,8 +24,13 @@ func init() {
 			Addresses: []string{
 				"http://localhost:9200",
 			},
-			Username: "elastic",
-			Password: env.FallbackEnvVariable("ELASTICSEARCH_PASSWORD", "TF2vEJMsWzn82"),
+			Username:      "elastic",
+			Password:      env.FallbackEnvVariable("ELASTICSEARCH_PASSWORD", "TF2vEJMsWzn82"),
+			RetryOnStatus: []int{502, 503, 504, 429},
+			MaxRetries:    30,
+			RetryBackoff: func(i int) time.Duration {
+				return time.Duration(i) * 30 * time.Second
+			},
 		},
 	)
 	if err != nil {
