@@ -6,13 +6,16 @@ import (
 	"strings"
 )
 
-func (w *Work) ToAbstract() string {
-	if w == nil {
+func TransformInvertedIndexToAbstract(invertedIndex map[string][]int) string {
+	if invertedIndex == nil {
+		return ""
+	}
+	if len(invertedIndex) == 0 {
 		return ""
 	}
 	// Create a list of (word, index) pairs.
 	var wordIndex [][]interface{}
-	for word, indices := range w.AbstractInvertedIndex {
+	for word, indices := range invertedIndex {
 		for _, idx := range indices {
 			wordIndex = append(wordIndex, []interface{}{word, idx})
 		}
@@ -31,6 +34,10 @@ func (w *Work) ToAbstract() string {
 
 	// Join the words with spaces and return as a string.
 	return strings.Join(words, " ")
+}
+
+func (w *Work) ToAbstract() string {
+	return TransformInvertedIndexToAbstract(w.AbstractInvertedIndex)
 }
 
 // GenerateAbstractFromInvertedIndex sets the abstract

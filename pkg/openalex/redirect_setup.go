@@ -17,7 +17,7 @@ import (
 
 var esClient *elasticsearch.Client
 
-func init() {
+func InitElasticSearch() {
 	// load env
 	env.LoadEnvFiles()
 	// create es client

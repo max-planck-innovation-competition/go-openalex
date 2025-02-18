@@ -1,6 +1,7 @@
 package openalex
 
 import (
+	"fmt"
 	"log"
 	"log/slog"
 	"os"
@@ -8,6 +9,13 @@ import (
 	"sort"
 	"strings"
 )
+
+type Processor struct {
+	DirectoryPath   string
+	StateHandler    *StateHandler
+	LineHandler     LineHandler
+	MergedIdHandler MergedIdRecordHandler
+}
 
 // visit walks over files in a directory
 func visit(files *[]string) filepath.WalkFunc {
@@ -47,17 +55,17 @@ func containsMergedIDs(filePath string) bool {
 }
 
 // ProcessDirectory parses the directory of separated files and processes them
-func ProcessDirectory(directoryPath string, fnEntityHandler ParsedEntityLineHandler, fnMergedIdHandler MergedIdRecordHandler, sh *StateHandler) (err error) {
-	logger := slog.With("directoryPath", directoryPath)
+func (p *Processor) ProcessDirectory() (err error) {
+	logger := slog.With("directoryPath", p.DirectoryPath)
 	logger.Info("Start reading directory")
 	// get the files
-	filePaths, err := GetFiles(directoryPath)
+	filePaths, err := p.GetFiles()
 	if err != nil {
 		logger.With("err", err).Error("error while reading the directory")
 		return
 	}
 	// process the files
-	err = ProcessFiles(filePaths, fnEntityHandler, fnMergedIdHandler, sh)
+	err = p.ProcessFiles(filePaths)
 	if err != nil {
 		logger.With("err", err).Error("error while processing the files")
 		return
@@ -67,11 +75,11 @@ func ProcessDirectory(directoryPath string, fnEntityHandler ParsedEntityLineHand
 }
 
 // GetFiles returns a list of files in a directory
-func GetFiles(directoryPath string) (filePaths []string, err error) {
-	logger := slog.With("directoryPath", directoryPath)
+func (p *Processor) GetFiles() (filePaths []string, err error) {
+	logger := slog.With("directoryPath", p.DirectoryPath)
 	logger.Info("Start listing directory")
 	// walk over the files in the directory
-	err = filepath.Walk(directoryPath, visit(&filePaths))
+	err = filepath.Walk(p.DirectoryPath, visit(&filePaths))
 	if err != nil {
 		logger.With("err", err).Error("error while walking the directory")
 		return
@@ -83,23 +91,32 @@ func GetFiles(directoryPath string) (filePaths []string, err error) {
 }
 
 // ProcessFiles parses the files and processes them
-func ProcessFiles(filePaths []string, fnEntityHandler ParsedEntityLineHandler, fnMergedIdHandler MergedIdRecordHandler, sh *StateHandler) (err error) {
+func (p *Processor) ProcessFiles(filePaths []string) (err error) {
 	logger := slog.With("method", "ProcessFiles")
+	total := len(filePaths)
 	// process all files
-	for _, filePath := range filePaths {
+	for i, filePath := range filePaths {
 		if strings.Contains(filePath, "merged_ids") {
 			// handle merged ids file
-			errFile := ParseMergedIDsFile(filePath, fnMergedIdHandler)
-			if errFile != nil {
-				logger.
-					With("err", errFile).
-					With("filePath", filePath).
-					Error("error while parsing the merged id file")
-				return errFile
+			if p.MergedIdHandler != nil {
+				errFile := ParseMergedIDsFile(filePath, p.MergedIdHandler)
+				if errFile != nil {
+					logger.
+						With("err", errFile).
+						With("filePath", filePath).
+						Error("error while parsing the merged id file")
+					return errFile
+				}
 			}
 		} else {
+			progress := float64(i) / float64(total) * 100
+			progressStr := fmt.Sprintf("%.2f", progress)
 			// handle other files
-			_, errFile := ParseFile(filePath, fnEntityHandler, sh)
+			logger.
+				With("filePath", filePath).
+				With("progress", progressStr).
+				Info("Processing file")
+			_, errFile := p.ParseFile(filePath)
 			if errFile != nil {
 				logger.
 					With("err", errFile).

@@ -22,7 +22,7 @@ go get -u github.com/max-planck-innovation-competition/go-openalex
 ```go
 dirPath := "./path/to/folder"
 openalex.Sync(dirPath)
-```
+``` 
 
 ### Process the directory
 

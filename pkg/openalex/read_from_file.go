@@ -31,6 +31,8 @@ const (
 	PublishersFileEntityType   FileEntityType = "publisher"
 	SourcesFileEntityType      FileEntityType = "sources"
 	WorksFileEntityType        FileEntityType = "works"
+	TopicsFileEntityType       FileEntityType = "topics"
+	DomainsFileEntityType      FileEntityType = "domains"
 )
 
 func GetEntityType(filePath string) (result FileEntityType, err error) {
@@ -48,6 +50,10 @@ func GetEntityType(filePath string) (result FileEntityType, err error) {
 		result = WorksFileEntityType
 	} else if strings.Contains(filePath, "sources") {
 		result = SourcesFileEntityType
+	} else if strings.Contains(filePath, "topics") {
+		result = TopicsFileEntityType
+	} else if strings.Contains(filePath, "domains") {
+		result = DomainsFileEntityType
 	} else {
 		// handle unsupported filePath or struct type
 		slog.Error("unsupported filePath")
@@ -67,26 +73,19 @@ func getUpdatedDate(filePath string) string {
 	return match
 }
 
-// ParsedEntityLineHandler is a function that handles a parsed line of a file
-type ParsedEntityLineHandler func(fileEntityType FileEntityType, entity any) error
+// LineHandler is a function that handles a line of a file
+type LineHandler func(filePath string, line string) error
 
-// PrintEntityHandler is a function that prints a parsed line of a file
-func PrintEntityHandler(fileEntityType FileEntityType, entity any) error {
-	fmt.Println(fileEntityType, entity)
+// PrintLineHandler is a function that prints a parsed line of a file
+func PrintLineHandler(filePath string, line string) error {
+	fmt.Println(filePath, line)
 	return nil
 }
 
 // ParseFile takes a file name and reads the data from within the file and parses every line it into structs
-func ParseFile(filePath string, fn ParsedEntityLineHandler, sh *StateHandler) (count int, err error) {
+func (p *Processor) ParseFile(filePath string) (count int, err error) {
 	logger := slog.With("filePath", filePath)
 	count = 0
-
-	// determine the struct type based on the filePath
-	entityType, err := GetEntityType(filePath)
-	if err != nil {
-		logger.With("err", err).Error("error getting entity type")
-		return count, err
-	}
 
 	// init the read
 	var scanner *bufio.Scanner
@@ -120,7 +119,7 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler, sh *StateHandler) (c
 		scanner = bufio.NewScanner(fileContent)
 	}
 	// set the max capacity of the scanner
-	const maxCapacity = 100 * 1024 * 1024 // 100 MB
+	const maxCapacity = 500 * 1024 * 1024 // 500 MB
 	buf := make([]byte, maxCapacity)
 	scanner.Buffer(buf, maxCapacity)
 
@@ -128,58 +127,25 @@ func ParseFile(filePath string, fn ParsedEntityLineHandler, sh *StateHandler) (c
 	entityLineIndex := 0
 	for scanner.Scan() {
 		entityLineIndex++
-		entityLineName := "entity_line_" + strconv.Itoa(entityLineIndex) + "_end"
-		entityLineDone, _ := sh.RegisterOrSkipEntityLine(entityLineName)
-		if entityLineDone {
-			continue
+		if p.StateHandler != nil {
+			entityLineName := "entity_line_" + strconv.Itoa(entityLineIndex) + "_end"
+			entityLineDone, _ := p.StateHandler.RegisterOrSkipEntityLine(entityLineName)
+			if entityLineDone {
+				continue
+			}
 		}
-
 		line := scanner.Text()
-		// replace all open alex prefixes
-		line = strings.ReplaceAll(line, "https://openalex.org/", "")
-		// determine the struct type based on the filePath
-		var data interface{}
-
-		switch entityType {
-		case AuthorsFileEntityType:
-			data = &Author{}
-		case ConceptsFileEntityType:
-			data = &Concept{}
-		case FundersFileEntityType:
-			data = &Funder{}
-		case InstitutionsFileEntityType:
-			data = &Institution{}
-		case SourcesFileEntityType:
-			data = &Source{}
-		case PublishersFileEntityType:
-			data = &Publisher{}
-		case WorksFileEntityType:
-			data = &Work{}
-
-		}
-
-		// Unmarshal the JSON line into the determined struct using jsoniter
-		err = json.UnmarshalFromString(line, data)
+		// handle the parsed line
+		err = p.LineHandler(filePath, line)
 		if err != nil {
-			logger.With("err", err).Error("error unmarshalling line")
+			logger.With("err", err).Error("error handling parsed entity")
 			return count, err
 		}
-
-		// convert the inverted abstract
-		if entityType == WorksFileEntityType {
-			work := data.(*Work)
-			work.Abstract = work.ToAbstract()
-			data = work
+		if p.StateHandler != nil {
+			p.StateHandler.MarkEntityLineAsFinished()
 		}
-
-		// handle the parsed line
-		err = fn(entityType, data)
-
-		sh.MarkEntityLineAsFinished()
-
 		// increment the count of the parsed record
 		count++
-
 	}
 
 	err = scanner.Err()
