@@ -29,7 +29,7 @@ func TestParseFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.data, func(t *testing.T) {
-			_, err := ParseFile(tt.path, PrintLineHandler, stateHandler)
+			_, err := p.ParseFile(tt.path)
 			if err != nil {
 				t.Error(err)
 			}
@@ -43,8 +43,10 @@ func TestParseWork(t *testing.T) {
 	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
 	fmt.Println(stateHandler)
 
+	p := Processor{}
+
 	workSamplePath := "../../sample/openalex/works/W2741809807"
-	_, err := ParseFile(workSamplePath, PrintLineHandler, stateHandler)
+	_, err := p.ParseFile(workSamplePath)
 	if err != nil {
 		t.Error(err)
 	}
@@ -56,8 +58,9 @@ func TestParseAuthor(t *testing.T) {
 	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
 	fmt.Println(stateHandler)
 
+	p := Processor{}
 	authorSamplePath := "../../sample/openalex/authors/A5023888391"
-	_, err := ParseFile(authorSamplePath, PrintLineHandler, stateHandler)
+	_, err := p.ParseFile(authorSamplePath)
 	if err != nil {
 		t.Error(err)
 	}
@@ -69,8 +72,9 @@ func TestParseSource(t *testing.T) {
 	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
 	fmt.Println(stateHandler)
 
+	p := Processor{}
 	sourceSamplePath := "../../sample/openalex/sources/S137773608"
-	_, err := ParseFile(sourceSamplePath, PrintLineHandler, stateHandler)
+	_, err := p.ParseFile(sourceSamplePath)
 	if err != nil {
 		t.Error(err)
 	}
@@ -82,8 +86,9 @@ func TestParseInstitution(t *testing.T) {
 	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
 	fmt.Println(stateHandler)
 
+	p := Processor{}
 	institutionSamplePath := "../../sample/openalex/institutions/I27837315"
-	_, err := ParseFile(institutionSamplePath, PrintLineHandler, stateHandler)
+	_, err := p.ParseFile(institutionSamplePath)
 	if err != nil {
 		t.Error(err)
 	}
@@ -95,8 +100,9 @@ func TestParseConcept(t *testing.T) {
 	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
 	fmt.Println(stateHandler)
 
+	p := Processor{}
 	conceptSamplePath := "../../sample/openalex/concepts/C71924100"
-	_, err := ParseFile(conceptSamplePath, PrintLineHandler, stateHandler)
+	_, err := p.ParseFile(conceptSamplePath)
 	if err != nil {
 		t.Error(err)
 	}
@@ -108,8 +114,9 @@ func TestParsePublisher(t *testing.T) {
 	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
 	fmt.Println(stateHandler)
 
+	p := Processor{}
 	publisherSamplePath := "../../sample/openalex/publishers/P4310319965"
-	_, err := ParseFile(publisherSamplePath, PrintLineHandler, stateHandler)
+	_, err := p.ParseFile(publisherSamplePath)
 	if err != nil {
 		t.Error(err)
 	}
@@ -121,8 +128,9 @@ func TestParseFunder(t *testing.T) {
 	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
 	fmt.Println(stateHandler)
 
+	p := Processor{}
 	funderSamplePath := "../../sample/openalex/funders/F4320332161"
-	_, err := ParseFile(funderSamplePath, PrintLineHandler, stateHandler)
+	_, err := p.ParseFile(funderSamplePath)
 	if err != nil {
 		t.Error(err)
 	}
