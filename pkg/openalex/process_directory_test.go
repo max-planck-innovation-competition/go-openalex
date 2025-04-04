@@ -28,6 +28,7 @@ func TestReadFromDirectory(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
 }
 
 func TestOrderByMergedIDsLast(t *testing.T) {

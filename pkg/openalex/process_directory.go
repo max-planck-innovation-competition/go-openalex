@@ -84,6 +84,7 @@ func (p *Processor) GetFiles() (filePaths []string, err error) {
 		logger.With("err", err).Error("error while walking the directory")
 		return
 	}
+
 	// order the files
 	filePaths = OrderByMergedIDsLast(filePaths)
 	logger.Info("Finished listing directory")
