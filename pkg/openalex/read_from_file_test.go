@@ -38,11 +38,6 @@ func TestParseFile(t *testing.T) {
 }
 
 func TestParseWork(t *testing.T) {
-	stateHandler := NewStateHandler("log.db", "C:\\go-openalex\\openalex-snapshot\\data", "C:\\go-openalex\\openalex-snapshot\\data")
-	//Comment to test safe delete
-	stateHandler.SetSafeDelete(false) //deletes everything under the Date Folder after finishing
-	fmt.Println(stateHandler)
-
 	p := Processor{}
 
 	workSamplePath := "../../sample/openalex/works/W2741809807"

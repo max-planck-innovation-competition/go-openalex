@@ -16,7 +16,7 @@ func TestDownloadSnapshot(t *testing.T) {
 	fmt.Println(stateHandler)
 
 	//Please change to your directory
-	err := Sync("C:\\docdb\\openalex", stateHandler)
+	err := Sync("C:\\docdb\\openalex")
 	if err != nil {
 		t.Error(err)
 	}
@@ -25,7 +25,7 @@ func TestDownloadSnapshot(t *testing.T) {
 func TestSync(t *testing.T) {
 	path := os.Getenv("TEST_OPENALEX_PATH")
 	//Please change to your directory
-	err := Sync(path, nil)
+	err := Sync(path)
 	if err != nil {
 		t.Error(err)
 	}
