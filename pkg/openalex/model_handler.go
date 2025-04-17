@@ -47,7 +47,11 @@ func ParseEntity(filePath string, line string) (data *Work, err error) {
 		}
 
 		data.Abstract = data.ToAbstract()
+
+		return &data, err
 	}
 
-	return data, err
+	// todo: add MergeIdEntityType
+
+	return nil, err
 }
