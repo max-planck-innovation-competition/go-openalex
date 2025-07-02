@@ -51,7 +51,5 @@ func ParseEntity(filePath string, line string) (data *Work, err error) {
 		return &data, err
 	}
 
-	// todo: add MergeIdEntityType
-
 	return nil, err
 }

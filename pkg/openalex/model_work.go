@@ -1,7 +1,6 @@
 package openalex
 
 import (
-	jsoniter "github.com/json-iterator/go"
 	"sort"
 	"strings"
 )
@@ -162,10 +161,10 @@ type Work struct {
 	} `json:"primary_location"`
 	LocationCount int `json:"location_count"`
 	Ids           struct {
-		Doi      string          `json:"doi"`
-		Mag      jsoniter.Number `json:"mag"`
-		Openalex string          `json:"openalex"`
-		Pmid     string          `json:"pmid,omitempty"`
+		Doi      string `json:"doi"`
+		Mag      int    `json:"mag"`
+		Openalex string `json:"openalex"`
+		Pmid     string `json:"pmid,omitempty"`
 	} `json:"ids"`
 	IsParatext  bool `json:"is_paratext"`
 	IsRetracted bool `json:"is_retracted"`
