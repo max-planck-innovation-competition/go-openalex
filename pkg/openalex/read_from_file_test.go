@@ -25,7 +25,10 @@ func TestParseFile(t *testing.T) {
 			{"gzAuthors", "../../sample/openalex/authors/updated_date=2023-04-21/part_000", 50}, */
 	}
 
-	p := Processor{}
+	p := Processor{
+		LineHandler:  PrintLineHandler,
+		StateHandler: stateHandler,
+	}
 
 	for _, tt := range tests {
 		t.Run(tt.data, func(t *testing.T) {
@@ -38,9 +41,11 @@ func TestParseFile(t *testing.T) {
 }
 
 func TestParseWork(t *testing.T) {
-	p := Processor{}
+	p := Processor{
+		LineHandler: PrintLineHandler,
+	}
 
-	workSamplePath := "../../sample/openalex/works/W2741809807"
+	workSamplePath := "../../sample/openalex/works/updated_date=2024-08-07/part_000.gz"
 	_, err := p.ParseFile(workSamplePath)
 	if err != nil {
 		t.Error(err)
