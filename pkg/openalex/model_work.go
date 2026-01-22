@@ -162,9 +162,7 @@ type Work struct {
 	LocationCount int `json:"location_count"`
 	Ids           struct {
 		Doi      string `json:"doi"`
-		Mag      int    `json:"mag"`
 		Openalex string `json:"openalex"`
-		Pmid     string `json:"pmid,omitempty"`
 	} `json:"ids"`
 	IsParatext  bool `json:"is_paratext"`
 	IsRetracted bool `json:"is_retracted"`
